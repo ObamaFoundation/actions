@@ -1,0 +1,15 @@
+name: "Download and Unzip Artifact"
+description: "Downloads a GitHub Actions artifact and unzips it. Fails gracefully if the artifact doesn't exist."
+inputs:
+  artifact_name:
+    description: 'Artifact name'
+    required: true
+  zip_name:
+    description: 'Name of the zip file'
+    default: "build.zip"
+outputs: 
+  exists: 
+    description: 'Whether artifact was found'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'

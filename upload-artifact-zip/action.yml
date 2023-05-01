@@ -1,0 +1,18 @@
+name: "Zip and Upload Artifact"
+description: "Zips files and uploads the result as a GitHub Actions artifact."
+inputs:
+  artifact_name:
+    description: 'Artifact name'
+    required: true
+  zip_name:
+    description: 'Name of the zip file'
+    default: "build.zip"
+  retention_days:
+    description: 'Duration after which artifact will expire in days'
+    default: '0'  # Defaults to repo default value
+  paths:
+    description: "File paths to zip"
+    required: true
+runs:
+  using: 'node16'
+  main: 'dist/index.js'

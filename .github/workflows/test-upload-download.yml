@@ -1,0 +1,51 @@
+name: "Test Upload Download"
+
+on:
+  workflow_dispatch
+
+concurrency:
+  group: test-upload-download
+  cancel-in-progress: true
+
+jobs:
+  test-upload-download:
+    name: Upload and download
+    runs-on: ubuntu-latest
+    env:
+      artifact_name: test-upload-download-${{ github.run_id }}
+    steps:
+      - name: Create test file
+        shell: bash
+        run: echo "testdata" > testfile
+      - uses: ObamaFoundation/actions/upload-artifact-zip@main
+        with:
+          artifact_name: ${{ env.artifact_name }}
+          paths: testfile
+          retention_days: 1
+      - name: Rename test file
+        shell: bash
+        run: mv testfile testfile.org
+      - uses: ObamaFoundation/actions/download-artifact-zip@main
+        id: download
+        with:
+          artifact_name: ${{ env.artifact_name }}
+      - name: Verify output variable
+        if: steps.download.outputs.exists == 'false'
+        shell: bash
+        run: echo 'Exists output value should be true'; false
+      - name: Verify test file
+        shell: bash
+        run: diff testfile.org testfile
+
+  test-artifact-missing:
+    name: Artifact does not exist
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ObamaFoundation/actions/download-artifact-zip@main
+        id: download
+        with:
+          artifact_name: artifact-does-not-exist
+      - name: Verify output variable
+        if: steps.download.outputs.exists == 'true'
+        shell: bash
+        run: echo 'Exists output value should be false'; false
