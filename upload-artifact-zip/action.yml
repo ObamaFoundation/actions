@@ -14,5 +14,14 @@ inputs:
     description: "File paths to zip"
     required: true
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: "composite"
+  steps:
+    - run: mkdir tmp
+      shell: bash
+    - run: zip -rq tmp/${{ inputs.zip_name }} ${{ inputs.paths }}
+      shell: bash
+    - uses: actions/upload-artifact@v3
+      with:
+        name: ${{ inputs.artifact_name }}
+        path: tmp/${{ inputs.zip_name }}
+        retention-days: ${{ inputs.retention_days }}

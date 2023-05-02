@@ -1,6 +1,9 @@
 /*
  * Download and Unzip Artifact.
  *
+ * This action is written in JS, because the actions/download_artifact provided
+ * by GitHub fails when an artifact doesn't exist.
+ *
  * Inspiration from https://github.com/xSAVIKx/artifact-exists-action
  */
 
