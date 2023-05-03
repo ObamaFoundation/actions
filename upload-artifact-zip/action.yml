@@ -16,7 +16,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: mkdir tmp
+    - run: mkdir -p tmp
       shell: bash
     - run: zip -rq tmp/${{ inputs.zip_name }} ${{ inputs.paths }}
       shell: bash

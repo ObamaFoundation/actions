@@ -4,9 +4,15 @@ This repo contains the code for custom workflow actions. To
 rebuild any of the actions follow the instructions in the
 [GitHub docs](https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action#commit-tag-and-push-your-action-to-github).
 
-To build all files: `./build.sh`
+To build all JS files: `./build.sh`
 
 Also see the documentation for [GitHub Actions Toolkit](https://github.com/actions/toolkit).
+
+To tag a commit:
+
+* `git tag -a -m "Explain the changes" v1.1`
+* To move the major revision: `git tag v1`
+* `git push --follow-tags`
 
 ## Testing
 
