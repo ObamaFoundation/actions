@@ -15,8 +15,8 @@ const exec = require('@actions/exec');
 async function run() {
   const tempDir = 'tmp';
   try {
-    const artifactName = core.getInput("artifact_name", { required: true });
-    const zipName = core.getInput("zip_name");  // Default value set in action.yml
+    const artifactName = core.getInput("artifact-name", { required: true });
+    const zipName = core.getInput("zip-name");  // Default value set in action.yml
     await io.mkdirP(tempDir);
     const tempArtifactPath = `${tempDir}/${artifactName}`;
     const artifactClient = artifact.create();

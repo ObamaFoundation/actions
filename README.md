@@ -1,12 +1,13 @@
 # Custom Actions
 
-This repo contains the code for custom workflow actions. To
-rebuild any of the actions follow the instructions in the
+This repo contains the code for custom workflow actions. To rebuild an action after making changes
+run `npm run all`. Or you can run `./build.sh` in the top directory.
+
+More info in the
 [GitHub docs](https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action#commit-tag-and-push-your-action-to-github).
 
-To build all JS files: `./build.sh`
-
-Also see the documentation for [GitHub Actions Toolkit](https://github.com/actions/toolkit).
+For info on the @actions packages see the
+[GitHub Actions Toolkit documentation](https://github.com/actions/toolkit).
 
 To tag a commit:
 

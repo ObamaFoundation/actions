@@ -1,10 +1,10 @@
 name: "Download and Unzip Artifact"
 description: "Downloads a GitHub Actions artifact and unzips it. Fails gracefully if the artifact doesn't exist."
 inputs:
-  artifact_name:
+  artifact-name:
     description: 'Artifact name'
     required: true
-  zip_name:
+  zip-name:
     description: 'Name of the zip file'
     default: "build.zip"
 outputs: 

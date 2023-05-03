@@ -1,13 +1,13 @@
 name: "Zip and Upload Artifact"
 description: "Zips files and uploads the result as a GitHub Actions artifact."
 inputs:
-  artifact_name:
+  artifact-name:
     description: 'Artifact name'
     required: true
-  zip_name:
+  zip-name:
     description: 'Name of the zip file'
     default: "build.zip"
-  retention_days:
+  retention-days:
     description: 'Duration after which artifact will expire in days'
     default: '0'  # Defaults to repo default value
   paths:
@@ -18,10 +18,10 @@ runs:
   steps:
     - run: mkdir -p tmp
       shell: bash
-    - run: zip -rq tmp/${{ inputs.zip_name }} ${{ inputs.paths }}
+    - run: zip -rq tmp/${{ inputs.zip-name }} ${{ inputs.paths }}
       shell: bash
     - uses: actions/upload-artifact@v3
       with:
-        name: ${{ inputs.artifact_name }}
-        path: tmp/${{ inputs.zip_name }}
-        retention-days: ${{ inputs.retention_days }}
+        name: ${{ inputs.artifact-name }}
+        path: tmp/${{ inputs.zip-name }}
+        retention-days: ${{ inputs.retention-days }}

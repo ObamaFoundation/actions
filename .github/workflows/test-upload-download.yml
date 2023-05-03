@@ -14,28 +14,31 @@ jobs:
     env:
       artifact_name: test-upload-download-${{ github.run_id }}
     steps:
-      - name: Create test file
+      - name: Create test files
         shell: bash
-        run: echo "testdata" > testfile
+        run: >
+          mkdir testfiles &&
+          echo "test data" > testfiles/file1 &&
+          echo "more test data" > testfiles/file2
       - uses: ObamaFoundation/actions/upload-artifact-zip@main
         with:
-          artifact_name: ${{ env.artifact_name }}
-          paths: testfile
-          retention_days: 1
-      - name: Rename test file
+          artifact-name: ${{ env.artifact_name }}
+          paths: testfiles
+          retention-days: 1
+      - name: Rename test files
         shell: bash
-        run: mv testfile testfile.org
+        run: mv testfiles testfiles.org
       - uses: ObamaFoundation/actions/download-artifact-zip@main
         id: download
         with:
-          artifact_name: ${{ env.artifact_name }}
+          artifact-name: ${{ env.artifact_name }}
       - name: Verify output variable
         if: steps.download.outputs.exists == 'false'
         shell: bash
         run: echo 'Exists output value should be true'; false
-      - name: Verify test file
+      - name: Verify test files
         shell: bash
-        run: diff testfile.org testfile
+        run: diff -r testfiles.org testfiles
 
   test-artifact-missing:
     name: Artifact does not exist
@@ -44,7 +47,7 @@ jobs:
       - uses: ObamaFoundation/actions/download-artifact-zip@main
         id: download
         with:
-          artifact_name: artifact-does-not-exist
+          artifact-name: artifact-does-not-exist
       - name: Verify output variable
         if: steps.download.outputs.exists == 'true'
         shell: bash
