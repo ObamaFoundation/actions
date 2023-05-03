@@ -1,7 +1,10 @@
 name: "Test Upload Download"
 
 on:
-  workflow_dispatch
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+    branches-ignore:
+      - "main"
 
 concurrency:
   group: test-upload-download
