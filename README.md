@@ -10,9 +10,9 @@ Also see the documentation for [GitHub Actions Toolkit](https://github.com/actio
 
 To tag a commit:
 
-* `git tag -a -m "Explain the changes" v1.1`
-* To move the major revision: `git tag v1`
-* `git push --follow-tags`
+* `git tag -a -m "Explain the changes" v1.1.0`
+* To move the major revision: `git tag -f v1 v1.1.0`
+* `git push -f --tags`
 
 ## Testing
 
