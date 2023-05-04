@@ -1,6 +1,6 @@
 # Deploy to Azure Storage
 
-This action uploads a set of directories to a specified Azure Storage account using the `az storage blob sync` method. The typical use-case would be to upload the `build` directory of one of our static sites. The defaults assume this use case, but allow the user to override all the individual parameters, if needed. If you find this action is insuficiently customizable, you may consider using the azure/CLI action directly.
+This action uploads a set of directories to a specified Azure Storage account using the `az storage blob sync` method. The typical use-case would be to upload the `build` directory of one of our static sites. The defaults assume this use case, but allow the user to override all the individual parameters, if needed. If you find this action is insufficiently customizable, you may consider using the azure/CLI action directly.
 
 **Note:** This action assumes you have already authenticated in your workflow with the `azure/login` action, which should look something like this:
 
