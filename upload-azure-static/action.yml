@@ -1,4 +1,4 @@
-name: "Upload Static Site"
+name: "Upload to Azure Storage"
 description: "Uploads file paths to Azure Blob Storage using `sync`"
 
 inputs:
