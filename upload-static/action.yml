@@ -7,7 +7,7 @@ inputs:
     required: true
   az-storage-container:
     description: 'Azure Blob Storage container name'
-    default: '$web'
+    default: "'$web'" # we have to quote this to the shel doesn't try to expand it
   paths:
     description: "File paths to upload"
     default: 'build'
