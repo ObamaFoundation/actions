@@ -1,9 +1,6 @@
-name: "Notify Slack channel"
-description: "Sends a success or failure message to Slack."
+name: Notify Slack channel
+description: Sends a success or failure message to Slack.
 inputs:
-  webhook-url:
-    description: Slack Webhook URL
-    required: true
   workflow-name:
     description: Workflow name to use in the message
     required: true
@@ -17,8 +14,6 @@ runs:
     - name: Notify Slack of success
       if:  ${{ fromJSON(inputs.success) }}
       uses: slackapi/slack-github-action@v1.18.0
-      env:
-        SLACK_WEBHOOK_URL: ${{ inputs.webhook-url }}
       with:
         payload: |
           {

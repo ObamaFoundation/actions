@@ -1,26 +1,16 @@
-name: "Publish to Chromatic"
-description: "Publishes site to Chromatic"
+name: Publish to Chromatic
+description: Publishes site to Chromatic.
 inputs:
   chromatic-project-token:
     required: true
-    description: "String - project auth token for chromatic"
+    description: Project auth token for chromatic.
   auto-accept-changes:
-    required: false
     default: 'false'
-    description: "boolean - whether or not the action tool should auto accept regressions"
+    description: Whether the action tool should auto accept regressions.
 
 runs:
   using: "composite"
   steps:
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 16
-        cache: 'npm'
-
-    - name: Install dependencies
-      shell: bash
-      run: npm ci --legacy-peer-deps=true
-
     - name: Publish to Chromatic
       id: chromatic
       uses: chromaui/action@v1
@@ -30,7 +20,7 @@ runs:
         exitZeroOnChanges: true
         onlyChanged: true
         exitOnceUploaded: true
-        autoAcceptChanges: ${{ inputs.AUauto-accept-changes }}
+        autoAcceptChanges: ${{ inputs.auto-accept-changes }}
 
     - name: Publish Summary
       shell: bash
