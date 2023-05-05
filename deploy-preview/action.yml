@@ -1,0 +1,46 @@
+name: "Deploy Preview"
+description: "Deploys the preview app to Azure."
+inputs:
+  gh-env:
+    description: 'The GitHub branch being deployed'
+    required: true
+  azure-client-id:
+    description: 'Azure client ID'
+    required: true
+  azure-client-secret:
+    description: 'Azure client secret'
+    required: true
+  azure-subscription-id:
+    description: 'Azure subscription ID'
+    required: true
+  azure-tenant-id:
+    description: 'Azure tenant ID'
+    required: true
+  azure-publish-profile:
+    description: 'Azure publish profile'
+    required: true
+  
+runs:
+  using: "composite"
+  steps:
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: '{"clientId":"${{ inputs.azure-client-id }}","clientSecret":"${{ inputs.azure-client-secret }}","subscriptionId":"${{ inputs.azure-subscription-id }}","tenantId":"${{ inputs.azure-tenant-id }}"}'
+
+    - name: "Deploy"
+      if: inputs.gh-env != 'prod'
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: obamaorg-preview
+        publish-profile: ${{ inputs.azure-publish-profile }}
+        package: .
+        slot-name: ${{ inputs.gh-env }}
+    
+    - name: "Deploy Webapp To Production"
+      if: inputs.gh-env == 'prod'
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: obamaorg-preview
+        publish-profile: ${{ inputs.azure-publish-profile }}
+        package: .
