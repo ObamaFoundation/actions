@@ -15,6 +15,7 @@ jobs:
     env:
       artifact_name: test-upload-download-${{ github.run_id }}
     steps:
+      - uses: actions/checkout@v3
       - name: Create test files
         shell: bash
         run: >
@@ -45,6 +46,7 @@ jobs:
     name: Artifact does not exist
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - uses: ./download-artifact-zip
         id: download
         with:
