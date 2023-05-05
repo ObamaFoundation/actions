@@ -22,8 +22,6 @@ runs:
     - name: Notify Slack of failure
       if: ! ${{ fromJSON(inputs.success) }}
       uses: slackapi/slack-github-action@v1.18.0
-      env:
-        SLACK_WEBHOOK_URL: ${{ inputs.webhook-url }}
       with:
         payload: |
           {

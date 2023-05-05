@@ -1,6 +1,6 @@
 # Deploy preview app to Azure
 
-Deploys preview app to Azure Webapp. Uses a Webapp slot that matches the GH branch, except for production which doesn't use a slot.
+Deploys preview app to Azure Webapp. Uses a Webapp slot that should match the GH branch, except for production which doesn't use a slot.
 
 See the [action.yml](./action.yml) file for parameter info.
 
