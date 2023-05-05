@@ -15,13 +15,14 @@ jobs:
     env:
       artifact_name: test-upload-download-${{ github.run_id }}
     steps:
+      - uses: actions/checkout@v3
       - name: Create test files
         shell: bash
         run: >
           mkdir testfiles &&
           echo "test data" > testfiles/file1 &&
           echo "more test data" > testfiles/file2
-      - uses: ObamaFoundation/actions/upload-artifact-zip@main
+      - uses: ./upload-artifact-zip
         with:
           artifact-name: ${{ env.artifact_name }}
           paths: testfiles
@@ -29,7 +30,7 @@ jobs:
       - name: Rename test files
         shell: bash
         run: mv testfiles testfiles.org
-      - uses: ObamaFoundation/actions/download-artifact-zip@main
+      - uses: ./download-artifact-zip
         id: download
         with:
           artifact-name: ${{ env.artifact_name }}
@@ -45,7 +46,8 @@ jobs:
     name: Artifact does not exist
     runs-on: ubuntu-latest
     steps:
-      - uses: ObamaFoundation/actions/download-artifact-zip@main
+      - uses: actions/checkout@v3
+      - uses: ./download-artifact-zip
         id: download
         with:
           artifact-name: artifact-does-not-exist
