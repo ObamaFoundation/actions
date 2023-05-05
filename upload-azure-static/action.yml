@@ -1,0 +1,29 @@
+name: "Upload to Azure Storage"
+description: "Uploads file paths to Azure Blob Storage using `sync`"
+
+inputs:
+  az-storage-account:
+    description: 'Azure Blob Storage account name'
+    required: true
+  az-storage-container:
+    description: 'Azure Blob Storage container name'
+    default: "'$web'" # we have to quote this so the shell doesn't try to expand it
+  paths:
+    description: "File paths to upload"
+    default: 'build'
+  delete-destination:
+    description: "Delete destination files not in source"
+    default: 'true'
+  
+runs: 
+  using: composite
+  steps:
+  - name: Sync directories to blob storage
+    uses: azure/CLI@v1
+    with:
+      inlineScript: |
+        az storage blob sync \
+          --account-name ${{ inputs.az-storage-account }} \
+          --container ${{ inputs.az-storage-container }} \
+          --source ${{ inputs.paths }} \
+          --delete-destination ${{ inputs.delete-destination }}
