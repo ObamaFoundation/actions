@@ -2,8 +2,8 @@ name: "Upload to Azure Storage"
 description: "Uploads file paths to Azure Blob Storage using `sync`"
 
 inputs:
-  az-storage-account:
-    description: 'Azure Blob Storage account name'
+  deploy-prefix:
+    description: 'Deploy prefix used for storage account and CDN'
     required: true
   az-storage-container:
     description: 'Azure Blob Storage container name'
@@ -14,7 +14,7 @@ inputs:
   delete-destination:
     description: "Delete destination files not in source"
     default: 'true'
-  
+
 runs: 
   using: composite
   steps:
@@ -23,7 +23,12 @@ runs:
     with:
       inlineScript: |
         az storage blob sync \
-          --account-name ${{ inputs.az-storage-account }} \
+          --account-name ${{ inputs.deploy-prefix }}obamaorg \
           --container ${{ inputs.az-storage-container }} \
           --source ${{ inputs.paths }} \
           --delete-destination ${{ inputs.delete-destination }}
+  - name: Purge CDN endpoint
+    uses: azure/CLI@v1
+    with:
+      inlineScript: |
+        az cdn endpoint purge --content-paths "/*" --profile-name "${{ inputs.deploy-prefix }}-obama-org-CDN" --name "${{ inputs.deploy-prefix }}-obama-org" --resource-group "of-obama-org"
