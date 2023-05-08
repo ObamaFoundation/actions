@@ -1,0 +1,27 @@
+name: Publish to Chromatic
+description: Publishes site to Chromatic.
+inputs:
+  chromatic-project-token:
+    required: true
+    description: Project auth token for chromatic.
+  auto-accept-changes:
+    default: 'false'
+    description: Whether the action tool should auto accept regressions.
+
+runs:
+  using: "composite"
+  steps:
+    - name: Publish to Chromatic
+      id: chromatic
+      uses: chromaui/action@v1
+      with:
+        projectToken: ${{ inputs.chromatic-project-token }}
+        buildScriptName: build:storybook
+        exitZeroOnChanges: true
+        onlyChanged: true
+        exitOnceUploaded: true
+        autoAcceptChanges: ${{ inputs.auto-accept-changes }}
+
+    - name: Publish Summary
+      shell: bash
+      run: echo -e "| Results |  |\n| --- | --- |\n| Build Results | ${{steps.chromatic.outputs.buildUrl}} |\n| Storybook Preview | ${{steps.chromatic.outputs.storybookUrl}} |\n| Error Count | ${{steps.chromatic.outputs.errorCount}} |" >> $GITHUB_STEP_SUMMARY

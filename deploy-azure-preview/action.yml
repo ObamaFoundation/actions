@@ -1,0 +1,29 @@
+name: Deploy preview app to Azure
+description: Deploys preview app to Azure Webapp.
+inputs:
+  slot-name:
+    description: The Webapp slot name to deploy into.
+    required: true
+  azure-publish-profile:
+    description: Azure publish profile. Pass in secret.
+    required: true
+  
+runs:
+  using: "composite"
+  steps:
+    - name: Upload to Webapp
+      if: inputs.slot-name != 'prod'
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: obamaorg-preview
+        publish-profile: ${{ inputs.azure-publish-profile }}
+        package: .
+        slot-name: ${{ inputs.slot-name }}
+    
+    - name: Upload to production Webapp
+      if: inputs.slot-name == 'prod'
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: obamaorg-preview
+        publish-profile: ${{ inputs.azure-publish-profile }}
+        package: .

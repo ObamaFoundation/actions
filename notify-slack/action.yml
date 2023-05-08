@@ -1,0 +1,29 @@
+name: Notify Slack channel
+description: Sends a success or failure message to Slack.
+inputs:
+  workflow-name:
+    description: Workflow name to use in the message
+    required: true
+  success:
+    description: Whether message should show success or failure
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Notify Slack of success
+      if:  ${{ fromJSON(inputs.success) }}
+      uses: slackapi/slack-github-action@v1.18.0
+      with:
+        payload: |
+          {
+          "text": ":happy-obama: ${{ inputs.workflow-name }} succeeded! ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          }
+    - name: Notify Slack of failure
+      if: ! ${{ fromJSON(inputs.success) }}
+      uses: slackapi/slack-github-action@v1.18.0
+      with:
+        payload: |
+          {
+          "text": ":grimacing: ${{ inputs.workflow-name }} has failed. ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          }
