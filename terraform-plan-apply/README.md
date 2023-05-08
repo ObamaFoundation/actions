@@ -47,5 +47,5 @@ with:
   component: 'myterraformfolder'  #(required)
   apply: false                    #(default)
   skip_fmt: false                 #(default)
-  skip_validation: false          #(default)
+  skip_validate: false            #(default)
 ```
