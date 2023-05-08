@@ -49,3 +49,4 @@ runs:
       id: apply
       shell: bash
       run: terraform -chdir=${{ inputs.component }} apply -auto-approve
+      

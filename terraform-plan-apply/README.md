@@ -20,7 +20,7 @@ See the [action.yml](./action.yml) file for parameter info.
 
 ## Example usage
 
-The following minimal example will run this action against the `myterraformfolder` subdirectory.
+The following minimal example will run this action against the `myterraformfolder` subdirectory:
 
 ```yaml
 uses: ObamaFoundation/actions/terraform-plan-apply@v1
@@ -28,7 +28,7 @@ with:
   component: 'myterraformfolder'
 ```
 
-To run the action AND apply the changes (DANGER! Make sure you have the right branch and ref rules set!)
+To run the action AND apply the changes (DANGER! Make sure you have the right branch and ref rules set!):
 
 ```yaml
 uses: ObamaFoundation/actions/terraform-plan-apply@v1
