@@ -10962,7 +10962,7 @@ async function run() {
     if (zipResult) {
       throw ('Unzip failed');
     }
-    core.info('Unzip successful');
+    core.info('Unzip successful X');
   } catch (err) {
     core.setFailed(err.message);
   }
