@@ -18,7 +18,7 @@ See the [action.yml](./action.yml) file for parameter info.
 ```yaml
 uses: ObamaFoundation/actions/upload-static@v1.0
 with:
-  deploy-prefix: dev
+  az-storage-account: 'blueobamaorg'
 ```
 
 The complete interface with defaults is as follows:
@@ -26,8 +26,9 @@ The complete interface with defaults is as follows:
 ```yaml
 uses: ObamaFoundation/actions/upload-static@v1.0
 with:
-  deploy-prefix: # No Default (Required)
+  az-storage-account: # No Default (Required)
   az-storage-container: # Default '$web'
   paths: # Default 'build'
   delete-destination: # Default 'true'
+  cdn-base-name: # Default is blank, which does not purge CDN
 ```
