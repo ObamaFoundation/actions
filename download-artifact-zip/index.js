@@ -40,7 +40,7 @@ async function run() {
     if (zipResult) {
       throw ('Unzip failed');
     }
-    core.info('Unzip successful X');
+    core.info('Unzip successful');
   } catch (err) {
     core.setFailed(err.message);
   }
