@@ -36,7 +36,7 @@ async function run() {
       return;
     }
 
-    const zipResult = await exec.exec('unzip', ['-q', `${tempArtifactPath}/${zipName}`]);
+    const zipResult = await exec.exec('unzip', ['-oq', `${tempArtifactPath}/${zipName}`]);
     if (zipResult) {
       throw ('Unzip failed');
     }
