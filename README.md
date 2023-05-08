@@ -1,7 +1,7 @@
 # Custom Actions
 
 This repo contains the code for custom GitHub Workflow actions. Most of the actions are
-composite actions, but some are written in JS for more flexibility. Those actions require
+composite actions, but some are written in JS for more flexibility. The JS actions require
 a build step before pushing changes.
 
 Install all packages at the top level. To build all of the subpackages from the top level: `npm run build`.
