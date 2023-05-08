@@ -30,4 +30,5 @@ with:
   az-storage-container: # Default '$web'
   paths: # Default 'build'
   delete-destination: # Default 'true'
+  cdn-base-name: # Default is blank, which does not purge CDN
 ```
