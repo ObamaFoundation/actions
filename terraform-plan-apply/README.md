@@ -2,6 +2,8 @@
 
 This action runs Terraform Plan and (optionally) Apply against a specified subdirectory (component).
 
+The action assumes you have a properly configured backend and runs `terraform init` before any other actions.
+
 **Note:** Terraform providers generally handle authentication themselves, so there is no need to use specialized steps like the `azure/login` action, as we do with other actions that interact directly with third-party services. This difference, however, still requires us to pass secret values to the action. For the `azurerm` provider, we authenticate using a service principal. A such, you will need to pass along the SP's credentials in the form of environment variables to the Terraform action. See the [`azurerm`](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/service_principal_client_secret) docs for more info.
 
 This is probably what you'll need:
