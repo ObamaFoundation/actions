@@ -41,9 +41,9 @@ runs:
     - name: Print summary
       shell: bash
       run: |
-        echo -e "## Deploy summary\n\n\`\`\`" >> $GITHUB_STEP_SUMMARY
+        echo -e "## Azure storage upload\n\n\`\`\`" >> $GITHUB_STEP_SUMMARY
         egrep 'Number of Copy Transfers|Total Number of Bytes' tmp_deploy_output.txt >> $GITHUB_STEP_SUMMARY
         echo -e "\`\`\`\n" >> $GITHUB_STEP_SUMMARY
         [[ "${{ inputs.cdn-base-name }}" ]] \
-          && (echo -e "## CDN purged: \`${{ inputs.cdn-base-name }}\`" >> $GITHUB_STEP_SUMMARY) \
-          || (echo -e "## CDN not purged" >> $GITHUB_STEP_SUMMARY)
+          && (echo -e "## Azure CDN purged: \`${{ inputs.cdn-base-name }}\`" >> $GITHUB_STEP_SUMMARY) \
+          || (echo -e "## Azure CDN not purged" >> $GITHUB_STEP_SUMMARY)
