@@ -17,7 +17,7 @@ runs:
       with:
         app-name: obamaorg-preview
         publish-profile: ${{ inputs.azure-publish-profile }}
-        package: .
+        package: ./preview
         slot-name: ${{ inputs.slot-name }}
     
     - name: Upload to production Webapp
@@ -26,4 +26,4 @@ runs:
       with:
         app-name: obamaorg-preview
         publish-profile: ${{ inputs.azure-publish-profile }}
-        package: .
+        package: ./preview
