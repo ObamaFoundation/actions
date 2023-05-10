@@ -22,6 +22,6 @@ runs:
         exitOnceUploaded: true
         autoAcceptChanges: ${{ inputs.auto-accept-changes }}
 
-    - name: Publish Summary
+    - name: Print summary
       shell: bash
       run: echo -e "| Results |  |\n| --- | --- |\n| Build Results | ${{steps.chromatic.outputs.buildUrl}} |\n| Storybook Preview | ${{steps.chromatic.outputs.storybookUrl}} |\n| Error Count | ${{steps.chromatic.outputs.errorCount}} |" >> $GITHUB_STEP_SUMMARY
