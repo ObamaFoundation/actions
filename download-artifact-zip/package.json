@@ -1,6 +1,6 @@
 {
-  "name": "download-artifact-zip",
-  "version": "1.0.0",
+  "name": "@actions/download-artifact-zip",
+  "version": "1",
   "description": "Download and Unzip Artifact",
   "main": "dist/index.js",
   "scripts": {
@@ -8,15 +8,5 @@
     "prepare": "ncc build index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "all": "npm run lint && npm run prepare"
-  },
-  "dependencies": {
-    "@actions/artifact": "^1.1.1",
-    "@actions/core": "^1.10.0",
-    "@actions/exec": "^1.1.1",
-    "@actions/io": "^1.1.3"
-  },
-  "devDependencies": {
-    "@vercel/ncc": "^0.36.1",
-    "eslint": "^8.39.0"
   }
 }

@@ -1,14 +1,28 @@
-name: "Test Upload Download"
+name: "Test Custom Actions"
 
 on:
   pull_request:
     types: [opened, synchronize, ready_for_review]
 
 concurrency:
-  group: test-upload-download
+  group: ${{ github.head_ref }}
   cancel-in-progress: true
 
 jobs:
+  test-compile:
+    name: Test compile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with: 
+          ref: ${{ github.ref }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - run: npm run test
   test-upload-download:
     name: Upload and download
     runs-on: ubuntu-latest
