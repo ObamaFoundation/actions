@@ -29,7 +29,7 @@ runs:
             --container ${{ inputs.az-storage-container }} \
             --source ${{ inputs.paths }} \
             --delete-destination ${{ inputs.delete-destination }} \
-            | tee tmp_output.txt
+            | tee tmp_deploy_output.txt
 
     - name: Purge CDN endpoint
       if: ${{ inputs.cdn-base-name }}
@@ -42,5 +42,9 @@ runs:
       if: ${{ inputs.cdn-base-name }}
       shell: bash
       run: |
-        egrep 'Number of Copy Transfers|Total Number of Bytes' tmp_output.txt >> $GITHUB_STEP_SUMMARY && \
-        echo -e "\nCDN ${{ inputs.cdn-base-name }} purged" >> $GITHUB_STEP_SUMMARY
+        echo -e "## Deploy summary\n\n\`\`\`" >> $GITHUB_STEP_SUMMARY
+        egrep 'Number of Copy Transfers|Total Number of Bytes' tmp_deploy_output.txt >> $GITHUB_STEP_SUMMARY
+        echo -e "\`\`\`\n" >> $GITHUB_STEP_SUMMARY
+        [[ "${{ inputs.cdn-base-name }}" ]] \
+          && (echo -e "## CDN purged: \`${{ inputs.cdn-base-name }}\`" >> $GITHUB_STEP_SUMMARY) \
+          || (echo -e "## CDN not purged" >> $GITHUB_STEP_SUMMARY)
