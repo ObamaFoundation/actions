@@ -39,7 +39,6 @@ runs:
           az cdn endpoint purge --content-paths "/*" --profile-name "${{ inputs.cdn-base-name }}-obama-org-CDN" --name "${{ inputs.cdn-base-name }}-obama-org" --resource-group "of-obama-org"
 
     - name: Print summary
-      if: ${{ inputs.cdn-base-name }}
       shell: bash
       run: |
         echo -e "## Deploy summary\n\n\`\`\`" >> $GITHUB_STEP_SUMMARY
