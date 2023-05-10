@@ -20,18 +20,27 @@ inputs:
 runs: 
   using: composite
   steps:
-  - name: Sync directories to blob storage
-    uses: azure/CLI@v1
-    with:
-      inlineScript: |
-        az storage blob sync \
-          --account-name ${{ inputs.az-storage-account }} \
-          --container ${{ inputs.az-storage-container }} \
-          --source ${{ inputs.paths }} \
-          --delete-destination ${{ inputs.delete-destination }}
-  - name: Purge CDN endpoint
-    if: ${{ inputs.cdn-base-name }}
-    uses: azure/CLI@v1
-    with:
-      inlineScript: |
-        az cdn endpoint purge --content-paths "/*" --profile-name "${{ inputs.cdn-base-name }}-obama-org-CDN" --name "${{ inputs.cdn-base-name }}-obama-org" --resource-group "of-obama-org"
+    - name: Sync directories to blob storage
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az storage blob sync \
+            --account-name ${{ inputs.az-storage-account }} \
+            --container ${{ inputs.az-storage-container }} \
+            --source ${{ inputs.paths }} \
+            --delete-destination ${{ inputs.delete-destination }} \
+            | tee tmp_output.txt
+
+    - name: Purge CDN endpoint
+      if: ${{ inputs.cdn-base-name }}
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az cdn endpoint purge --content-paths "/*" --profile-name "${{ inputs.cdn-base-name }}-obama-org-CDN" --name "${{ inputs.cdn-base-name }}-obama-org" --resource-group "of-obama-org"
+
+    - name: Print summary
+      if: ${{ inputs.cdn-base-name }}
+      shell: bash
+      run: |
+        egrep 'Number of Copy Transfers|Total Number of Bytes' tmp_output.txt >> $GITHUB_STEP_SUMMARY && \
+        echo -e "\nCDN ${{ inputs.cdn-base-name }} purged" >> $GITHUB_STEP_SUMMARY
