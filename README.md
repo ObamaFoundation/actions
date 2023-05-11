@@ -22,9 +22,18 @@ e.g. `@v1`. To tag a commit:
 * `git pull`
 * Look at https://github.com/ObamaFoundation/actions/tags and use the next highest major, minor, or patch version below as X, Y, and Z (e.g. v1.0.9):
 * `git tag -a -m "Explain the changes" vX.Y.Z`
-* `git tag -f vX.Y`
-* `git tag -f vX`
 * `git push -f --tags`
+* If you've made big changes, this is a good point to test them. Changing the major and minor tags could break workflows.
+  * In `obamaorg-swa` repo on a new branch, change all `@v1` to your new version in the `.github` directory.
+  * Push the change and create a temporary pull request, which will fire off a build.
+  * Make sure the build succeeds.
+  * Delete the temporary pull request.
+  * Continue below.
+* While still on `main` branch, move the minor release with: `git tag -f vX.Y`
+* And major release: `git tag -f vX`
+* Push thoses tag changes: `git push -f --tags`
+
+Note: To see where a tag is currently pointing (locally): `git rev-list -n 1 vX.Y.Z`.
 
 ## Testing
 
