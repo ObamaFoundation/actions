@@ -24,7 +24,7 @@ e.g. `@v1`. To tag a commit:
 * `git tag -a -m "Explain the changes" vX.Y.Z`
 * `git push -f --tags`
 * If you've made big changes, this is a good point to test them. Changing the major and minor tags could break workflows.
-  * In `obamaorg-swa` repo on a new branch, change all `@v1` to your new version in the `.github` directory.
+  * In `obamaorg-swa` repo on a new branch, change all with regex `(ObamaFoundation/actions/.*)@v1` to your new version `$1@vX.Y.Z` in the `.github` directory.
   * Push the change and create a temporary pull request, which will fire off a build.
   * Make sure the build succeeds.
   * Delete the temporary pull request.
