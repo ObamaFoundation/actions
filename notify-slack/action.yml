@@ -13,7 +13,7 @@ runs:
   steps:
     - name: Notify Slack of success
       if:  inputs.success == 'true'
-      uses: slackapi/slack-github-action@v1.18.0
+      uses: slackapi/slack-github-action@v1
       with:
         payload: |
           {
@@ -21,7 +21,7 @@ runs:
           }
     - name: Notify Slack of failure
       if: inputs.success != true
-      uses: slackapi/slack-github-action@v1.18.0
+      uses: slackapi/slack-github-action@v1
       with:
         payload: |
           {
