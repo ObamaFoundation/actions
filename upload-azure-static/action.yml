@@ -32,7 +32,7 @@ runs:
             | tee tmp_deploy_output.txt
 
     - name: Purge CDN endpoint
-      if: ${{ inputs.cdn-base-name }}
+      if: inputs.cdn-base-name
       uses: azure/CLI@v1
       with:
         inlineScript: |

@@ -12,7 +12,7 @@ runs:
   using: "composite"
   steps:
     - name: Notify Slack of success
-      if:  ${{ fromJSON(inputs.success) }}
+      if:  inputs.success == 'true'
       uses: slackapi/slack-github-action@v1.18.0
       with:
         payload: |
@@ -20,7 +20,7 @@ runs:
           "text": ":happy-obama: ${{ inputs.workflow-name }} succeeded! ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           }
     - name: Notify Slack of failure
-      if: ! ${{ fromJSON(inputs.success) }}
+      if: inputs.success != true
       uses: slackapi/slack-github-action@v1.18.0
       with:
         payload: |
