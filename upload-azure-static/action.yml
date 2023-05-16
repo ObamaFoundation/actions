@@ -30,7 +30,17 @@ runs:
             --source ${{ inputs.paths }} \
             --delete-destination ${{ inputs.delete-destination }} \
             | tee tmp_deploy_output.txt
-
+    - name: Update Cache Control Headers for *.html files
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az storage blob upload-batch \
+            --account-name ${{ inputs.az-storage-account }} \
+            --destination ${{ inputs.az-storage-container }} \
+            --source ${{ inputs.paths }} \
+            --pattern "*.html" \
+            --content-cache-control "no-store" \
+            --overwrite
     - name: Purge CDN endpoint
       if: inputs.cdn-base-name
       uses: azure/CLI@v1
