@@ -1,0 +1,38 @@
+name: "Purge Azure Front Door CDN Endpoint"
+description: "Purges the Azure Front Door CDN endpoint using `az afd endpoint purge`"
+
+inputs:
+  resource-group:
+    description: "Azure resource group name"
+    required: true
+  profile-name:
+    description: "Azure Front Door profile name"
+    required: true
+  endpoint-name:
+    description: "Azure Front Door endpoint name"
+    required: true
+  domains:
+    description: "Space-separated list of domains to purge"
+    required: true
+  content-paths:
+    description: "Space-separated list of content paths to purge"
+    default: "/*"
+
+runs:
+  using: composite
+  steps:
+    - name: Purge endpoint
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          echo "## Azure Frontdoor Endpoint Purge" >> $GITHUB_STEP_SUMMARY
+          az afd endpoint purge \
+            --resource-group ${{ inputs.resource-group }} \
+            --profile-name ${{ inputs.profile-name }} \
+            --endpoint-name ${{ inputs.endpoint-name }} \
+            --domains ${{ inputs.domains }} \
+            --content-paths ${{ inputs.content-paths }} &&
+            echo "Successfully purged CDN: \
+              \`${{ inputs.profile-name }}/${{ inputs.endpoint-name }}\`" >> $GITHUB_STEP_SUMMARY ||
+            echo "Failed to purge CDN: \
+              \`${{ inputs.profile-name }}/${{ inputs.endpoint-name }}\`" >> $GITHUB_STEP_SUMMARY
