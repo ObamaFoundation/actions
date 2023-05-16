@@ -22,7 +22,7 @@ runs:
       uses: azure/CLI@v1
       with:
         inlineScript: |
-          echo "## Azure CDN Purge\n\n\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "## Azure CDN Purge" >> $GITHUB_STEP_SUMMARY
           az cdn endpoint purge \
             --resource-group ${{ inputs.resource-group }} \
             --profile-name ${{ inputs.profile-name }} \
