@@ -16,6 +16,9 @@ inputs:
     default: "true"
   cdn-base-name:
     description: "(Deprecated) Base name for CDN name and profile. Leave blank to skip purging CDN."
+  apply-cache-control:
+    description: "Apply `Cache-Control: no-store` to all html files"
+    default: false
 
 runs:
   using: composite
@@ -31,6 +34,7 @@ runs:
             --delete-destination ${{ inputs.delete-destination }} \
             | tee tmp_deploy_output.txt
     - name: Update Cache Control Headers for *.html files
+      if: inputs.apply-cache-control
       uses: azure/CLI@v1
       with:
         inlineScript: |
