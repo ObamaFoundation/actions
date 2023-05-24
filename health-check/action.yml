@@ -1,0 +1,22 @@
+name: "Health Check"
+description: "Health Check for a given URL"
+
+inputs:
+  endpoint:
+    description: "URL endpoint to test"
+    required: true
+  json_assertions:
+    description: "Assertions to run (multiline, one per line)"
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/github-script@v6
+      env:
+        HEALTH_CHECK_ENDPOINT: ${{ inputs.endpoint }}
+        HEALTH_CHECK_JSON_ASSERTIONS: ${{ inputs.json_assertions }}
+      with:
+        script: |
+          const script = require('./health-check/src/main.js')({ core, fetch });
+          await script();
