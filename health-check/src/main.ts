@@ -4,8 +4,8 @@ import fetch from "node-fetch"
 import * as core from "@actions/core"
 
 const ARGS = {
-  endpoint: core.getInput(process.env.INPUT_ENDPOINT, { required: true }),
-  json_assertions: core.getMultilineInput(process.env.INPUT_JSON_ASSERTIONS),
+  endpoint: core.getInput('endpoint', { required: true }),
+  json_assertions: core.getMultilineInput('json_assertions'),
 }
 
 async function main() {

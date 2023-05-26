@@ -9980,8 +9980,8 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 
 
 const ARGS = {
-    endpoint: core.getInput(process.env.INPUT_ENDPOINT, { required: true }),
-    json_assertions: core.getMultilineInput(process.env.INPUT_JSON_ASSERTIONS),
+    endpoint: core.getInput('endpoint', { required: true }),
+    json_assertions: core.getMultilineInput('json_assertions'),
 };
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
