@@ -3,19 +3,17 @@ import { assert, parse } from "./assertions"
 import fetch from "node-fetch"
 import * as core from "@actions/core"
 
-const ARGS = {
-  endpoint: core.getInput("endpoint", { required: true }),
-  json_assertions: core.getMultilineInput("json_assertions"),
-}
-
 async function main() {
-  core.info(`Health Check for: ${ARGS.endpoint}`)
+  const endpoint = core.getInput("endpoint", { required: true });
+  const json_assertions = core.getMultilineInput("json_assertions")
+
+  core.debug(`Health Check for: ${endpoint}`)
   try {
-    const response = await fetch(ARGS.endpoint)
+    const response = await fetch(endpoint)
     const results: Result[] = []
 
     // Status Checks
-    core.info(`-- Status Check: ${response.status}`)
+    core.debug(`-- Status Check: ${response.status}`)
     if (response.status !== 200) {
       results.push({
         result: "fail",
@@ -28,11 +26,11 @@ async function main() {
       })
     }
 
-    core.info(`-- Assertsions Count: ${ARGS.json_assertions.length}`)
-    if (ARGS.json_assertions.length > 0) {
+    core.debug(`-- Assertsions Count: ${json_assertions.length}`)
+    if (json_assertions.length > 0) {
       const json = await response.json()
 
-      ARGS.json_assertions.forEach((assertion) => {
+      json_assertions.forEach((assertion) => {
         const { left, op, right } = parse(assertion)
         results.push(assert({ left: json[left], op, right }))
       })
@@ -41,8 +39,9 @@ async function main() {
       core.setFailed(`Action failed health check`)
     }
     // Output Results
-    core.info(`-- Results: ${JSON.stringify(results, null, 2)}`)
+    core.debug(`-- Results: ${JSON.stringify(results, null, 2)}`)
     core.summary.addHeading("Health Check Results")
+    core.summary.addHeading(`For ${endpoint}`, 3)
     core.summary.addTable(
       results.map(({ assertion, result }) => [
         assertion,
