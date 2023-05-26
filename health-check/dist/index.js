@@ -6953,21 +6953,24 @@ exports["default"] = _default;
 /* harmony export */   "Q": () => (/* binding */ parse),
 /* harmony export */   "h": () => (/* binding */ assert)
 /* harmony export */ });
-const parse_multi_line = (string) => {
-    return string
-        .split("\n")
-        .map((line) => line.trim())
-        .filter(Boolean);
-};
+const OPS = ["==", "!=", "<", ">", "<=", ">="];
+const op_index = (input) => (op) => ({ op, idx: input.indexOf(op) });
+const found_indexes = ({ idx }) => idx > 0;
 const parse_assertion = (input) => {
-    const ops = ["==", "!=", "<", ">", "<=", ">="];
-    const op = ops.filter((op) => input.indexOf(op) >= 0);
-    if (op.length == 0) {
-        throw new Error(`Invalid assertion: ${input}`);
+    // We just want to get the index of the first op in the string
+    // so we can split the string into left and right.
+    // We need the original Op to know its length.
+    const op_idxs = OPS
+        .map(op_index(input))
+        .filter(found_indexes);
+    if (op_idxs.length == 0) {
+        throw new Error(`Invalid assertion: ${input}. No valid Operator found.`);
     }
     else {
-        const [left, right] = input.split(op[0]).map((s) => s.trim());
-        return { left, op: op[0], right };
+        const left = input.slice(0, op_idxs[0].idx).trim();
+        const op = op_idxs[0].op;
+        const right = input.slice(op_idxs[0].idx + op.length).trim();
+        return { left, op, right };
     }
 };
 const evaluate_assertion = ({ left, op, right }) => {
@@ -6980,7 +6983,7 @@ const evaluate_assertion = ({ left, op, right }) => {
     }
 };
 const assert = (assertion) => evaluate_assertion(assertion);
-const parse = (multiline) => parse_multi_line(multiline).map(parse_assertion);
+const parse = (assertion_string) => parse_assertion(assertion_string);
 
 
 /***/ }),
@@ -7811,7 +7814,7 @@ var __webpack_exports__ = {};
 __nccwpck_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: ./src/assertions.ts
-var src_assertions = __nccwpck_require__(9604);
+var assertions = __nccwpck_require__(9604);
 ;// CONCATENATED MODULE: external "node:http"
 const external_node_http_namespaceObject = require("node:http");
 ;// CONCATENATED MODULE: external "node:https"
@@ -9977,15 +9980,17 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 
 
 const ARGS = {
-    endpoint: process.env.INPUT_ENDPOINT,
-    json_assertions: process.env.INPUT_JSON_ASSERTIONS,
+    endpoint: core.getInput(process.env.INPUT_ENDPOINT, { required: true }),
+    json_assertions: core.getMultilineInput(process.env.INPUT_JSON_ASSERTIONS),
 };
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
+        core.info(`Health Check for: ${ARGS.endpoint}`);
         try {
             const response = yield fetch(ARGS.endpoint);
             const results = [];
             // Status Checks
+            core.info(`-- Status Check: ${response.status}`);
             if (response.status !== 200) {
                 results.push({
                     result: "fail",
@@ -9998,18 +10003,21 @@ function main() {
                     assertion: `Status code == ${response.status}`,
                 });
             }
-            // JSON Assertions
-            const assertions = (0,src_assertions/* parse */.Q)(ARGS.json_assertions);
-            if (assertions.length > 0) {
+            core.info(`-- Assertsions Count: ${ARGS.json_assertions.length}`);
+            if (ARGS.json_assertions.length > 0) {
                 const json = yield response.json();
-                assertions.forEach((assertion) => {
-                    const { left, op, right } = assertion;
-                    results.push((0,src_assertions/* assert */.h)({ left: json[left], op, right }));
+                ARGS.json_assertions.forEach((assertion) => {
+                    const { left, op, right } = (0,assertions/* parse */.Q)(assertion);
+                    results.push((0,assertions/* assert */.h)({ left: json[left], op, right }));
                 });
             }
             if (results.some((r) => r.result == "fail")) {
                 core.setFailed(`Action failed health check`);
             }
+            // Output Results
+            core.info(`-- Results: ${JSON.stringify(results, null, 2)}`);
+            core.summary.addHeading("Health Check Results");
+            core.summary.addTable(results.map(({ assertion, result }) => [assertion, (result == "pass") ? "✅" : "❌"]));
         }
         catch (error) {
             core.setFailed(`Action failed with error ${error}`);
