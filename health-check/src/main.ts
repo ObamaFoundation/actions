@@ -4,8 +4,8 @@ import fetch from "node-fetch"
 import * as core from "@actions/core"
 
 const ARGS = {
-  endpoint: process.env.INPUT_ENDPOINT,
-  json_assertions: process.env.INPUT_JSON_ASSERTIONS,
+  endpoint: core.getInput(process.env.INPUT_ENDPOINT, { required: true }),
+  json_assertions: core.getMultilineInput(process.env.INPUT_JSON_ASSERTIONS),
 }
 
 async function main() {
@@ -26,23 +26,24 @@ async function main() {
       })
     }
 
-    // JSON Assertions
-    const assertions = parse(ARGS.json_assertions)
-
-    if (assertions.length > 0) {
+    if (ARGS.json_assertions.length > 0) {
       const json = await response.json()
 
-      assertions.forEach((assertion) => {
-        const { left, op, right } = assertion
+      ARGS.json_assertions.forEach((assertion) => {
+        const { left, op, right } = parse(assertion)
         results.push(assert({ left: json[left], op, right }))
-      })
+      })  
     }
     if (results.some((r) => r.result == "fail")) {
       core.setFailed(`Action failed health check`)
     }
+    // Output Results
+    core.summary.addHeading("Health Check Results")
+    core.summary.addTable(results.map(({assertion, result}) => [assertion, (result == "pass") ? "✅" : "❌"]))
   } catch (error) {
     core.setFailed(`Action failed with error ${error}`)
   }
+
 }
 
 main()

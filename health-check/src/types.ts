@@ -10,3 +10,8 @@ export type Assertion = {
   op: Op;
   right: string;
 }
+
+export type OpIndex = {
+  op: Op;
+  idx: number;
+}
