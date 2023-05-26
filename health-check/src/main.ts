@@ -1,5 +1,6 @@
 import { Result } from "./types"
 import { assert, parse } from "./assertions"
+import fetch from "node-fetch"
 import * as core from "@actions/core"
 
 const ARGS = {
