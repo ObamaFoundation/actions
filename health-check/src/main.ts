@@ -4,8 +4,8 @@ import fetch from "node-fetch"
 import * as core from "@actions/core"
 
 const ARGS = {
-  endpoint: core.getInput('endpoint', { required: true }),
-  json_assertions: core.getMultilineInput('json_assertions'),
+  endpoint: core.getInput("endpoint", { required: true }),
+  json_assertions: core.getMultilineInput("json_assertions"),
 }
 
 async function main() {
@@ -35,7 +35,7 @@ async function main() {
       ARGS.json_assertions.forEach((assertion) => {
         const { left, op, right } = parse(assertion)
         results.push(assert({ left: json[left], op, right }))
-      })  
+      })
     }
     if (results.some((r) => r.result == "fail")) {
       core.setFailed(`Action failed health check`)
@@ -43,11 +43,16 @@ async function main() {
     // Output Results
     core.info(`-- Results: ${JSON.stringify(results, null, 2)}`)
     core.summary.addHeading("Health Check Results")
-    core.summary.addTable(results.map(({assertion, result}) => [assertion, (result == "pass") ? "✅" : "❌"]))
+    core.summary.addTable(
+      results.map(({ assertion, result }) => [
+        assertion,
+        result == "pass" ? "✅" : "❌",
+      ])
+    )
+    core.summary.write()
   } catch (error) {
     core.setFailed(`Action failed with error ${error}`)
   }
-
 }
 
 main()
