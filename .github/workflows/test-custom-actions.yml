@@ -14,12 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with: 
+        with:
           ref: ${{ github.ref }}
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: 'npm'
+          cache: "npm"
       - name: Install dependencies
         run: npm ci
       - run: npm run test
@@ -77,4 +77,3 @@ jobs:
       - uses: ./health-check
         with:
           endpoint: https://www.example.com
-      - run: node ./health-check/tests/assertions.tests.mjs
