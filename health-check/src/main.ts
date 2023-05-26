@@ -9,11 +9,13 @@ const ARGS = {
 }
 
 async function main() {
+  core.info(`Health Check for: ${ARGS.endpoint}`)
   try {
     const response = await fetch(ARGS.endpoint)
     const results: Result[] = []
 
     // Status Checks
+    core.info(`-- Status Check: ${response.status}`)
     if (response.status !== 200) {
       results.push({
         result: "fail",
@@ -26,6 +28,7 @@ async function main() {
       })
     }
 
+    core.info(`-- Assertsions Count: ${ARGS.json_assertions.length}`)
     if (ARGS.json_assertions.length > 0) {
       const json = await response.json()
 
@@ -38,6 +41,7 @@ async function main() {
       core.setFailed(`Action failed health check`)
     }
     // Output Results
+    core.info(`-- Results: ${JSON.stringify(results, null, 2)}`)
     core.summary.addHeading("Health Check Results")
     core.summary.addTable(results.map(({assertion, result}) => [assertion, (result == "pass") ? "✅" : "❌"]))
   } catch (error) {
