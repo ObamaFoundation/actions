@@ -10,7 +10,7 @@ The action can also accept a newline-delimited set of assertions that are evalua
   2. an `operator` which is any (single) valid JS boolean operator (excluding triple-equals and variants)
   3. a comparison `value`.
   
-Combining operators and expressions will result in undefined behavior. This isn't a fully fleshed-our DSL.
+Combining operators and expressions will result in undefined behavior. This isn't a fully fleshed-out DSL.
 
 Because GH actions is stringly-typed, you do not (and should not) add extra quotes to string values. Thus, `version === kjhaskasdfsdfad` is evaluated by the JS interpreter as `'value-from-key-version' === 'kjhaskasdfsdfad'`. Booleans, too, are converted to strings: `boolean === true` evaluates as `'value-from-key-boolean' === 'true'`
 
