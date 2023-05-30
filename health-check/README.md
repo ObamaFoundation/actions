@@ -4,11 +4,13 @@ A simple health check to assert health-check json object returns correct values 
 
 In its most basic form, the health check simply checks that the supplied endpoint returns a `200` status.
 
-The action can also accept a newline-delimited set of assertions that are evaluated by Node. Yes, in an `eval()`. Don\'t @ me. These are VERY simple assertions, so don't expect too much. Assertions have precisely three parts, separated by whitespace. Keys and values may not contain any whitespace:
+The action can also accept a newline-delimited set of assertions that are evaluated by Node. Yes, in an `eval()`. Don\'t @ me. These are VERY simple assertions, so don't expect too much. Assertions have precisely three parts:
 
-  1. a `key` representing the `key` name of the healthcheck JSON blob that you wish to evaluate. Cannot contain whitespace.
-  2. an `operator` which is any (single) valid JS boolean operator
-  3. a comparison `value`. Cannot contain whitespace.
+  1. a `key` representing the `key` name of the healthcheck JSON blob that you wish to evaluate.
+  2. an `operator` which is any (single) valid JS boolean operator (excluding triple-equals and variants)
+  3. a comparison `value`.
+  
+Combining operators and expressions will result in undefined behavior. This isn't a fully fleshed-our DSL.
 
 Because GH actions is stringly-typed, you do not (and should not) add extra quotes to string values. Thus, `version === kjhaskasdfsdfad` is evaluated by the JS interpreter as `'value-from-key-version' === 'kjhaskasdfsdfad'`. Booleans, too, are converted to strings: `boolean === true` evaluates as `'value-from-key-boolean' === 'true'`
 
