@@ -1,0 +1,21 @@
+{
+  "name": "health-check",
+  "version": "1.0.0",
+  "description": "A simple health check to assert health-check json object returns correct values for the build.",
+  "main": "src/main.ts",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "build": "ncc build src/main.ts"
+  },
+  "author": "jweinbender@obama.org",
+  "license": "ISC",
+  "devDependencies": {
+    "@actions/core": "^1.10.0",
+    "@types/node": "^20.2.4",
+    "@vercel/ncc": "^0.36.1",
+    "node-fetch": "^3.3.1",
+    "typescript": "^5.0.4"
+  }
+}
