@@ -4,6 +4,10 @@
   "description": "Monorepo for custom actions",
   "scripts": {
     "build": "for D in *; do if [ -f \"${D}/package.json\" ]; then ( cd \"$D\" && npm ci && npm run all ); fi; done",
-    "test": "npm run build && git diff --exit-code"
+    "test": "npm run build && git diff --exit-code",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "husky": "^8.0.3"
   }
 }
