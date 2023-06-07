@@ -31,7 +31,7 @@ async function run() {
     `--account-name=${azStorageAccount}`,
     `--name=${azStorageContainer}`,
     '--permissions=acdlrw',
-    `--expiry=${expiryStr}`,
+    `--expiry=${expiryStr}Z`,
     '--auth-mode=login',
     '--as-user',
   ], options);
