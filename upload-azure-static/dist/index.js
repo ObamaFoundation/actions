@@ -4095,6 +4095,7 @@ var __webpack_exports__ = {};
  * Inspiration from https://github.com/TravisSpomer/deploy-to-azure-storage
  */
 
+const fs = __nccwpck_require__(147);
 const core = __nccwpck_require__(186);
 const exec = __nccwpck_require__(514);
 
@@ -4122,7 +4123,7 @@ async function run() {
     '--permissions=acdlrw',
     `--expiry=${expiryStr}Z`,
     '--auth-mode=login',
-    //'--as-user',
+    '--as-user',
   ], options);
   if (errorCode) {
     core.setFailed('Generating sas failed.');
@@ -4130,7 +4131,8 @@ async function run() {
   }
   // Trim leading/trailing doublequote from sas
   sas = sas.trim().slice(1, -1);
-  // TODO: next line is temp
+  // TODO: next lines are temp
+  sas = 'sv=2022-11-02&ss=b&srt=sco&sp=rwdlaciytfx&se=2033-05-31T05:47:19Z&st=2023-05-30T21:47:19Z&spr=https&sig=Lwk1yD9hdn%2BLN0ua9Bh0hl0wVVUJvwchBZ4bPjTW1t8%3D';
   //core.setSecret(sas);
 
   // Upload the html files first with cache-control set
@@ -4150,12 +4152,8 @@ async function run() {
     return;
   }
 
-  // TODO: This does not write into step summary as expected
-  core.info("")
-  core.info("----")
-  core.info("Deployment was successful!")
-  core.info(`[https://${ azStorageAccount }.z19.web.core.windows.net/](https://${ azStorageAccount }.z19.web.core.windows.net/)`);
-  core.info("----")
+  const summaryFile = process.env.GITHUB_STEP_SUMMARY;
+  fs.appendFileSync(summaryFile, `Deployment was successful: [https://${ azStorageAccount }.z19.web.core.windows.net/](https://${ azStorageAccount }.z19.web.core.windows.net/)`)
 }
 
 run();
