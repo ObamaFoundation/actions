@@ -44,6 +44,7 @@ async function run() {
   sas = sas.trim().slice(1, -1);
   // TODO: next lines are temp
   //sas = 'sv=2022-11-02&ss=b&srt=sco&sp=rwdlaciytfx&se=2033-05-31T05:47:19Z&st=2023-05-30T21:47:19Z&spr=https&sig=Lwk1yD9hdn%2BLN0ua9Bh0hl0wVVUJvwchBZ4bPjTW1t8%3D';
+  sas = 'se=2023-06-07T23%3A45%3A14Z&sp=racwdl&sv=2021-06-08&sr=c&skoid=6fdc8673-b848-4270-b531-bd48155db2fe&sktid=edc3459d-b332-4fb7-8a0e-d6f7f45cd3f5&skt=2023-06-07T22%3A50%3A00Z&ske=2023-06-07T23%3A45%3A14Z&sks=b&skv=2021-06-08&sig=6XW3Ja42yBgkIX6Rr4GAHITYx%2Bl6AraqH/b1OnN%2BDN8%3D';
   //core.setSecret(sas);
 
   // Upload the html files first with cache-control set
