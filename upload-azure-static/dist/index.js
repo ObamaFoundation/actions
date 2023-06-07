@@ -4129,10 +4129,11 @@ async function run() {
     return;
   }
   // Trim leading/trailing doublequote from sas
-  sas = sas.slice(1, -1);
+  sas = sas.trim().slice(1, -1);
+  //core.setSecret(sas);
 
   // Upload the html files first with cache-control set
-  const destUrl = `https://${ azStorageAccount }.blob.core.windows.net/${ azStorageContainer }?` + sas;
+  const destUrl = `https://${ azStorageAccount }.blob.core.windows.net/${ azStorageContainer }?${sas}`;
   errorCode = await exec.exec(azCopyCommand, ['copy', `${paths}/*`, destUrl, '--recursive' , '--include-pattern', '*.html', '--cache-control', 'no-store']);
   if (errorCode)
   {
