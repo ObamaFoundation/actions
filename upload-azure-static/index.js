@@ -29,7 +29,7 @@ async function run() {
   };
   errorCode = await exec.exec('az', ['storage', 'container', 'generate-sas',
     `--account-name=${azStorageAccount}`,
-    `--name=${azStorageContainer}`,
+    `--name='${azStorageContainer}'`,
     '--permissions=acdlrw',
     `--expiry=${expiryStr}Z`,
     '--auth-mode=login',
