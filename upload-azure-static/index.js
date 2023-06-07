@@ -1,4 +1,15 @@
-module.exports = async ({core, exec}) => {
+/*
+ * Upload static site to Azure storage.
+ *
+ * This action is written in JS.
+ *
+ * Inspiration from https://github.com/TravisSpomer/deploy-to-azure-storage
+ */
+
+const core = require('@actions/core');
+const exec = require('@actions/exec');
+
+async function run() {
   const azStorageAccount = core.getInput('az-storage-account', { required: true });
   const azStorageContainer = core.getInput('az-storage-container');
   const paths = core.getInput('paths');
@@ -54,3 +65,5 @@ module.exports = async ({core, exec}) => {
   core.info(`[https://${ azStorageAccount }.z19.web.core.windows.net/](https://${ azStorageAccount }.z19.web.core.windows.net/)`);
   core.info("----")
 }
+
+run();

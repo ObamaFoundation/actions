@@ -13,11 +13,5 @@ inputs:
     default: 'build'
 
 runs:
-  using: composite
-  steps:
-    - uses: actions/checkout@v3
-    - uses: actions/github-script@v6
-      with:
-        script: |
-          const script = require('./script.js')
-          await script({core, exec})
+  using: 'node16'
+  main: 'dist/index.js'
