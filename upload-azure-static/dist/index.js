@@ -4132,7 +4132,7 @@ async function run() {
   // Trim leading/trailing doublequote from sas
   sas = sas.trim().slice(1, -1);
   // TODO: next lines are temp
-  sas = 'sv=2022-11-02&ss=b&srt=sco&sp=rwdlaciytfx&se=2033-05-31T05:47:19Z&st=2023-05-30T21:47:19Z&spr=https&sig=Lwk1yD9hdn%2BLN0ua9Bh0hl0wVVUJvwchBZ4bPjTW1t8%3D';
+  //sas = 'sv=2022-11-02&ss=b&srt=sco&sp=rwdlaciytfx&se=2033-05-31T05:47:19Z&st=2023-05-30T21:47:19Z&spr=https&sig=Lwk1yD9hdn%2BLN0ua9Bh0hl0wVVUJvwchBZ4bPjTW1t8%3D';
   //core.setSecret(sas);
 
   // Upload the html files first with cache-control set
