@@ -2,6 +2,9 @@ name: "Upload to Azure Storage"
 description: "Uploads file paths to Azure Blob Storage using `sync`"
 
 inputs:
+  az-subscription-id:
+    description: 'ID for subscription'
+    required: true
   az-storage-account:
     description: 'Azure Blob Storage account name'
     required: true
