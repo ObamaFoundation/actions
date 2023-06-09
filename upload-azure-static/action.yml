@@ -22,9 +22,9 @@ runs:
       shell: bash
       run: |
         az storage copy \
-          '-s=${{ inputs.paths } /*' \
+          '-s=${{ inputs.paths }}/*' \
           '-d=https://${{ inputs.az-storage-account }}.blob.core.windows.net/${{ inputs.az-storage-container }}' \
-          '--subscription=${{ inputs.az-subscription-id }}' \
+          --subscription=${{ inputs.az-subscription-id }} \
           --recursive \
           '--include-pattern=*.html' \
           -- --cache-control=no-store \
