@@ -39,5 +39,5 @@ with:
   az-subscription-id: # No Default (Required)
   az-storage-account: # No Default (Required)
   az-storage-container: # Default '$web'
-  paths: # Default 'build'
+  path: # Default 'build'
 ```

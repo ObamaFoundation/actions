@@ -11,8 +11,8 @@ inputs:
   az-storage-container:
     description: "Azure Blob Storage container name"
     default: "$web"
-  paths:
-    description: "File paths to upload"
+  path:
+    description: "File path to upload"
     default: "build"
 
 runs:
@@ -22,7 +22,7 @@ runs:
       shell: bash
       run: |
         az storage copy \
-          '-s=${{ inputs.paths }}/*' \
+          '-s=${{ inputs.path }}/*' \
           '-d=https://${{ inputs.az-storage-account }}.blob.core.windows.net/${{ inputs.az-storage-container }}' \
           --subscription=${{ inputs.az-subscription-id }} \
           --recursive \
@@ -36,7 +36,7 @@ runs:
         az storage blob sync \
           --account-name=${{ inputs.az-storage-account }} \
           '--container=${{ inputs.az-storage-container }}' \
-          --source=${{ inputs.paths }} \
+          --source=${{ inputs.path }} \
           | tee tmp_sync_output.txt
 
     - name: Print summary
