@@ -1,0 +1,14 @@
+name: "Health Check"
+description: "Health Check for a given URL"
+
+inputs:
+  endpoint:
+    description: "URL endpoint to test"
+    required: true
+  json_assertions:
+    description: "Assertions to run (multiline, one per line)"
+    default: ""
+
+runs:
+  using: node16
+  main: 'dist/index.js'
