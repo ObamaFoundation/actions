@@ -47,4 +47,4 @@ runs:
         echo -e "\`\`\`\n\nSync:\n\`\`\`" >> $GITHUB_STEP_SUMMARY
         egrep 'Number of Copy Transfers|Total Number of Bytes' tmp_sync_output.txt >> $GITHUB_STEP_SUMMARY
         echo -e "\`\`\`\n" >> $GITHUB_STEP_SUMMARY
-        echo -e "Deployment was successful: [https://${{ inputs.az-storage-account }}.z19.web.core.windows.net/](https://${{ inputs.az-storage-account }}.z19.web.core.windows.net/)\n" >> $GITHUB_STEP_SUMMARY"
+        echo -e "Deployment was successful: [https://${{ inputs.az-storage-account }}.z19.web.core.windows.net/](https://${{ inputs.az-storage-account }}.z19.web.core.windows.net/)\n" >> $GITHUB_STEP_SUMMARY
