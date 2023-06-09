@@ -3,18 +3,48 @@ description: "Uploads file paths to Azure Blob Storage using `sync`"
 
 inputs:
   az-subscription-id:
-    description: 'ID for subscription'
+    description: "ID for subscription"
     required: true
   az-storage-account:
-    description: 'Azure Blob Storage account name'
+    description: "Azure Blob Storage account name"
     required: true
   az-storage-container:
-    description: 'Azure Blob Storage container name'
+    description: "Azure Blob Storage container name"
     default: "$web"
   paths:
     description: "File paths to upload"
-    default: 'build'
+    default: "build"
 
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: composite
+  steps:
+    - name: Copy html files with cache-control
+      shell: bash
+      run: |
+        az storage copy \
+          '-s=${{ inputs.paths } /*' \
+          '-d=https://${{ inputs.az-storage-account }}.blob.core.windows.net/${{ inputs.az-storage-container }}' \
+          '--subscription=${{ inputs.az-subscription-id }}' \
+          --recursive \
+          '--include-pattern=*.html' \
+          -- --cache-control=no-store \
+          | tee tmp_copy_output.txt
+
+    - name: Sync remaining files
+      shell: bash
+      run: |
+        az storage blob sync \
+        --account-name=${{ inputs.azStorageAccount }} \
+        --container=${{ inputs.az-storage-container }} \
+        --source=${{ inputs.paths }} \
+        | tee tmp_sync_output.txt
+
+    - name: Print summary
+      shell: bash
+      run: |
+        echo -e "## Azure storage upload\n\nCopy:\n\`\`\`" >> $GITHUB_STEP_SUMMARY
+        egrep 'Number of Transfers|TotalBytesTransferred' tmp_copy_output.txt >> $GITHUB_STEP_SUMMARY
+        echo -e "\`\`\`\n\nSync:\n\`\`\`" >> $GITHUB_STEP_SUMMARY
+        egrep 'Number of Copy Transfers|Total Number of Bytes' tmp_sync_output.txt >> $GITHUB_STEP_SUMMARY
+        echo -e "\`\`\`\n" >> $GITHUB_STEP_SUMMARY
+        echo -e "Deployment was successful: [https://${{ inputs.az-storage-account }}.z19.web.core.windows.net/](https://${{ inputs.az-storage-account }}.z19.web.core.windows.net/)\n" >> $GITHUB_STEP_SUMMARY"
