@@ -34,10 +34,11 @@ runs:
       shell: bash
       run: |
         az storage blob sync \
-        --account-name=${{ inputs.azStorageAccount }} \
-        --container=${{ inputs.az-storage-container }} \
-        --source=${{ inputs.paths }} \
-        | tee tmp_sync_output.txt
+          --account-name=${{ inputs.azStorageAccount }} \
+          --container=${{ inputs.az-storage-container }} \
+          --subscription=${{ inputs.az-subscription-id }} \
+          --source=${{ inputs.paths }} \
+          | tee tmp_sync_output.txt
 
     - name: Print summary
       shell: bash
