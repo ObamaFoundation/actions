@@ -1,8 +1,8 @@
 name: Setup Node and NPM
 description: Installs Node and NPM packages and automatically caches based on package-lock.json.
 inputs:
-  cache-cypress:
-    description: 'Whether to cache the Cypress binary'
+  install-Cypress:
+    description: 'Whether to install the Cypress binary'
     default: "true"
 
 runs:
@@ -13,13 +13,14 @@ runs:
         node-version: 16
         cache: 'npm'
 
-    - name: Cache Cypress binary
+    - name: Install dependencies
       if: inputs.cache-cypress == 'true'
-      uses: actions/cache@v2
+      uses: cypress-io/github-action@v5
       with:
-        path: ~/.cache/Cypress
-        key: cypress-cache-${{ hashFiles('package-lock.json') }}
+        install-command: npm ci --legacy-peer-deps=true
+        runTests: false
 
     - name: Install dependencies
+      if: inputs.cache-cypress != 'true'
       shell: bash
       run: npm ci --legacy-peer-deps=true
