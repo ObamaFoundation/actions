@@ -35,8 +35,7 @@ runs:
       run: |
         az storage blob sync \
           --account-name=${{ inputs.az-storage-account }} \
-          --container=${{ inputs.az-storage-container }} \
-          --subscription=${{ inputs.az-subscription-id }} \
+          '--container=${{ inputs.az-storage-container }}' \
           --source=${{ inputs.paths }} \
           | tee tmp_sync_output.txt
 
