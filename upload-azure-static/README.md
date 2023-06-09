@@ -1,12 +1,17 @@
 # Deploy to Azure Storage
 
-This action uploads a directory to a specified Azure Storage account using the `az storage` command. The first step copies the *.html
-files with the `Cache-Control: no-store` header. Bypassing the cache in this way helps us ensure that the session affinity cookies
-are set properly by Azure Front Door when deployed to our blue/green environment(s).
+This action uploads a directory to a specified Azure Storage account using the `az storage` command.
+The typical use-case would be to upload the `build` directory for a static site. The first
+step copies the *.html files with the `Cache-Control: no-store` header. Bypassing the cache in this
+way helps us ensure that the session affinity cookies are set properly by Azure Front Door when
+deployed to our blue/green environment(s).
 
-The second step syncs the rest of the files.
+The second step syncs the remaining files (non-html), deleting files if needed.
 
-**Note:** This action assumes you have already authenticated in your workflow with the `azure/login` action, which should look something like this:
+Under the hood, the `az storage` command is using `azcopy` and creating a SAS from the login credentials.
+
+**Note:** This action assumes you have already authenticated in your workflow with the `azure/login`
+action, which should look something like this:
 
 ```yaml
 - name: Azure Login
