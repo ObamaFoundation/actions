@@ -29,7 +29,27 @@ runs:
           '--include-pattern=*.html' \
           -- --cache-control=no-store \
           | tee tmp_copy_output.txt
-
+    - name: Copy immutable application files with long TTL values
+      shell: bash
+      run: |
+        az storage copy \
+          '-s=${{ inputs.path }}/_app/immutable/*' \
+          '-d=https://${{ inputs.az-storage-account }}.blob.core.windows.net/${{ inputs.az-storage-container }}' \
+          --subscription=${{ inputs.az-subscription-id }} \
+          --recursive \
+          -- --cache-control=max-age=31536000 \
+          | tee tmp_copy-other_output.txt
+      
+    - name: Copy font files with long TTL values
+      shell: bash
+      run: |
+        az storage copy \
+          '-s=${{ inputs.path }}/fonts/*' \
+          '-d=https://${{ inputs.az-storage-account }}.blob.core.windows.net/${{ inputs.az-storage-container }}' \
+          --subscription=${{ inputs.az-subscription-id }} \
+          --recursive \
+          -- --cache-control=max-age=31536000 \
+          | tee tmp_copy-other_output.txt
     - name: Sync remaining files
       shell: bash
       run: |
