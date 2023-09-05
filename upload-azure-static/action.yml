@@ -11,6 +11,9 @@ inputs:
   az-storage-container:
     description: "Azure Blob Storage container name"
     default: "$web"
+  delete-destination:
+    description: "Should delete files currently at the destination that do not appear in the current build"
+    default: "true"
   path:
     description: "File path to upload"
     default: "build"
@@ -37,6 +40,7 @@ runs:
           --account-name=${{ inputs.az-storage-account }} \
           '--container=${{ inputs.az-storage-container }}' \
           --source=${{ inputs.path }} \
+          --delete-destination=${{ inputs.delete-destination }} \
           | tee tmp_sync_output.txt
 
     - name: Print summary
