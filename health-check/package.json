@@ -7,7 +7,8 @@
     "test": "tests"
   },
   "scripts": {
-    "build": "ncc build src/main.ts"
+    "build": "ncc build src/main.ts",
+    "all": "npm run build"
   },
   "author": "jweinbender@obama.org",
   "license": "ISC",
