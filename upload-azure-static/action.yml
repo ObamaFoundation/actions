@@ -33,6 +33,16 @@ runs:
           -- --cache-control=no-store \
           | tee tmp_copy_output.txt
 
+    - name: Sync html files
+      shell: bash
+      run: |
+        az storage blob sync \
+          --account-name=${{ inputs.az-storage-account }} \
+          '--container=${{ inputs.az-storage-container }}' \
+          --source=${{ inputs.path }} \
+          '--include-pattern=*.html' \
+          | tee tmp_sync_output.txt
+
     - name: Sync remaining files
       shell: bash
       run: |
