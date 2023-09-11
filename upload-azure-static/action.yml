@@ -21,6 +21,17 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Copy _app directory files
+      shell: bash
+      run: |
+        az storage copy \
+          '-s=${{ inputs.path }}/*' \
+          '-d=https://${{ inputs.az-storage-account }}.blob.core.windows.net/${{ inputs.az-storage-container }}' \
+          --subscription=${{ inputs.az-subscription-id }} \
+          --recursive \
+          '--include-path=_app' \
+          | tee tmp_copy_output.txt
+
     - name: Copy html files with cache-control
       shell: bash
       run: |
