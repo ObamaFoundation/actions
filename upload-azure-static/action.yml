@@ -21,6 +21,7 @@ inputs:
   delete-destination:
     description: "Should delete files currently at the destination that do not appear in the current build"
     default: "true"
+  
   path:
     description: "File path to upload"
     default: "build"
