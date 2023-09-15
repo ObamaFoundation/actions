@@ -8,6 +8,13 @@ inputs:
   az-storage-account:
     description: "Azure Blob Storage account name"
     required: true
+  last-storage-account:
+    description: "Previous Azure Blob Storage account name if production"
+    required: false
+  copy-from-previous-location:
+    description: If true, copy files from last-storage-account to az-storage-account
+    type: boolean
+    default: false
   az-storage-container:
     description: "Azure Blob Storage container name"
     default: "$web"
@@ -63,6 +70,18 @@ runs:
           --source=${{ inputs.path }} \
           --delete-destination=${{ inputs.delete-destination }} \
           | tee tmp_sync_output.txt
+
+    - name: Copy _app directory files from previous container
+      if: ${{ inputs.copy-from-previous-location && inputs.last-storage-account }}
+      shell: bash
+      run: |
+        az storage copy \
+          '-s=https://${{ inputs.az-storage-account }}.blob.core.windows.net/${{ inputs.last-storage-container }}' \
+          '-d=https://${{ inputs.az-storage-account }}.blob.core.windows.net/${{ inputs.az-storage-container }}' \
+          --subscription=${{ inputs.az-subscription-id }} \
+          --recursive \
+          '--include-path=_app' \
+          | tee tmp_copy_output.txt
 
     - name: Print summary
       shell: bash
