@@ -1,10 +1,7 @@
-name: "Cleanup Directory"
-description: "Uploads file paths to Azure Blob Storage using `sync`"
+name: "Clean-up Directory"
+description: "Cleans out old files from directory"
 
 inputs:
-  az-subscription-id:
-    description: "ID for subscription"
-    required: true
   az-storage-account:
     description: "Azure Blob Storage account name"
     required: true
@@ -22,15 +19,12 @@ runs:
   using: composite
   steps:
     - name: Delete old files from previous container (Dryrun)
-      if: ${{ inputs.copy-from-previous-location && inputs.last-storage-account }}
       shell: bash
       run: |
-        echo -e `date -v'-${{inputs.file-retention-days}}d' +%F'T'%H:%M'Z'` >> $DELETE_DATE
+        export DELETE_DATE=$(echo -e `date -v'-${{inputs.file-retention-days}}d' +%F'T'%H:%M'Z'` >> $DELETE_DATE)
         az storage blob delete-batch \
           --account-name=${{ inputs.az-storage-account }} \
-          '--container=${{ inputs.last-storage-container }}' \
-          --source=${{ inputs.path }} \
-          --delete-destination=${{ inputs.delete-destination }} \
+          --source=${{ inputs.az-storage-container }} \
           --if-unmodified-since $DELETE_DATE \
           '--pattern=*.js,*.css' \
           '--dryrun=${{ inputs.dryrun }} 
