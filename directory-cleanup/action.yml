@@ -21,7 +21,7 @@ runs:
     - name: Delete old files from previous container (Dryrun)
       shell: bash
       run: |
-        export DELETE_DATE=$(echo -e `date -v'-${{inputs.file-retention-days}}d' +%F'T'%H:%M'Z'` >> $DELETE_DATE)
+        export DELETE_DATE=$(echo -e `date -v'-${{inputs.file-retention-days}}d' +%F'T'%H:%M'Z'`)
         az storage blob delete-batch \
           --account-name=${{ inputs.az-storage-account }} \
           --source=${{ inputs.az-storage-container }} \
