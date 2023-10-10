@@ -8,9 +8,6 @@ inputs:
   az-storage-account:
     description: "Azure Blob Storage account name"
     required: true
-  last-storage-account:
-    description: "Previous Azure Blob Storage account name if production"
-    required: false
   copy-from-previous-location:
     description: If true, copy files from last-storage-account to az-storage-account
     type: boolean
@@ -18,6 +15,9 @@ inputs:
   az-storage-container:
     description: "Azure Blob Storage container name"
     default: "$web"
+  last-storage-container:
+    description: "Previous Azure Blob Storage account name if production"
+    required: false
   delete-destination:
     description: "Should delete files currently at the destination that do not appear in the current build"
     default: "true"
@@ -73,7 +73,7 @@ runs:
           | tee tmp_sync_output.txt
 
     - name: Copy _app directory files from previous container
-      if: ${{ inputs.copy-from-previous-location && inputs.last-storage-account }}
+      if: ${{ inputs.copy-from-previous-location && inputs.last-storage-container }}
       shell: bash
       run: |
         az storage copy \
