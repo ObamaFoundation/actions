@@ -18,7 +18,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Delete old files from previous container (Dryrun)
+    - name: Delete old files from previous container
       shell: bash
       run: |
         export DELETE_DATE=$(echo -e `date -v'-${{inputs.file-retention-days}}d' +%F'T'%H:%M'Z'`)
