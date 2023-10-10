@@ -8,6 +8,9 @@ inputs:
   az-storage-account:
     description: "Azure Blob Storage account name"
     required: true
+  last-storage-account:
+    description: "Previous Azure Blob Storage account name if production"
+    required: false
   copy-from-previous-location:
     description: If true, copy files from last-storage-account to az-storage-account
     type: boolean
@@ -15,9 +18,6 @@ inputs:
   az-storage-container:
     description: "Azure Blob Storage container name"
     default: "$web"
-  last-storage-container:
-    description: "Previous Azure Blob Storage account name if production"
-    required: false
   delete-destination:
     description: "Should delete files currently at the destination that do not appear in the current build"
     default: "true"
@@ -77,7 +77,7 @@ runs:
       shell: bash
       run: |
         az storage copy \
-          '-s=https://${{ inputs.az-storage-account }}.blob.core.windows.net/${{ inputs.last-storage-container }}' \
+          '-s=https://${{ inputs.last-storage-account }}.blob.core.windows.net/${{ inputs.az-storage-container }}' \
           '-d=https://${{ inputs.az-storage-account }}.blob.core.windows.net/${{ inputs.az-storage-container }}' \
           --subscription=${{ inputs.az-subscription-id }} \
           --recursive \
