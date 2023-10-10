@@ -73,7 +73,7 @@ runs:
           | tee tmp_sync_output.txt
 
     - name: Copy _app directory files from previous container
-      if: ${{ inputs.copy-from-previous-location && inputs.last-storage-container }}
+      if: ${{ inputs.copy-from-previous-location && inputs.last-storage-account }}
       shell: bash
       run: |
         az storage copy \
