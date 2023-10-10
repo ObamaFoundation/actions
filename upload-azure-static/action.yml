@@ -77,7 +77,7 @@ runs:
       shell: bash
       run: |
         az storage copy \
-          '-s=https://${{ inputs.az-storage-account }}.blob.core.windows.net/${{ inputs.last-storage-container }}' \
+          '-s=https://${{ inputs.last-storage-account }}.blob.core.windows.net/${{ inputs.az-storage-container }}' \
           '-d=https://${{ inputs.az-storage-account }}.blob.core.windows.net/${{ inputs.az-storage-container }}' \
           --subscription=${{ inputs.az-subscription-id }} \
           --recursive \
