@@ -69,11 +69,16 @@ jobs:
         if: steps.download.outputs.exists == 'true'
         shell: bash
         run: echo 'Exists output value should be false'; false
+
   test-health-check:
     name: Health check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "npm"
       - uses: ./health-check
         with:
           endpoint: https://www.example.com
