@@ -11,10 +11,6 @@ inputs:
   file-retention-days:
     description: "How many days of js and css files we should keep"
     default: 10
-  dryrun:
-    description: "Print out what will be performed"
-    default: true
-
 runs:
   using: composite
   steps:
@@ -29,5 +25,4 @@ runs:
           --account-name=${{ inputs.az-storage-account }} \
           --source=${{ inputs.az-storage-container }} \
           --if-unmodified-since $DELETE_DATE \
-          '--pattern=*.js,*.css' \
-          ${{ inputs.dryrun && " --dryrun" || '' }} ##Ternary operators must have a truthy second operand  (see https://7tonshark.com/posts/github-actions-ternary-operator/)
+          '--pattern=*.js,*.css' 
