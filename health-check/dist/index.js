@@ -2143,7 +2143,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 /***/ }),
 
-/***/ 716:
+/***/ 569:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -2489,7 +2489,7 @@ exports["default"] = void 0;
 
 var _v = _interopRequireDefault(__nccwpck_require__(998));
 
-var _md = _interopRequireDefault(__nccwpck_require__(716));
+var _md = _interopRequireDefault(__nccwpck_require__(569));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2911,7 +2911,7 @@ __nccwpck_require__.r(__webpack_exports__);
 var assertions = __nccwpck_require__(604);
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(186);
-;// CONCATENATED MODULE: ./src/checks.ts
+;// CONCATENATED MODULE: ./src/main.ts
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -2981,7 +2981,7 @@ function doCheck(endpoint, jsonAssertions) {
         return true;
     });
 }
-function checks() {
+function main() {
     return __awaiter(this, void 0, void 0, function* () {
         const endpoint = core.getInput("endpoint", { required: true });
         const jsonAssertions = core.getMultilineInput("json_assertions");
@@ -2999,9 +2999,9 @@ function checks() {
     });
 }
 
-;// CONCATENATED MODULE: ./src/main.ts
+;// CONCATENATED MODULE: ./src/entry.ts
 
-checks();
+main();
 
 })();
 

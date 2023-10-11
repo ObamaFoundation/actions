@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { checks, setSleepTime } from './checks';
+import { main, setSleepTime } from './main';
 import * as core from "@actions/core"
 
 const DEBUG = false;  // true will print the healthcheck output to the console
@@ -50,7 +50,7 @@ describe('health check', () => {
     assertions = [];
     const setFailed = vi.spyOn(core, 'setFailed');
 
-    await checks();
+    await main();
     expect(setFailed).not.toHaveBeenCalled();
   });
 
@@ -61,7 +61,7 @@ describe('health check', () => {
     ];
     const setFailed = vi.spyOn(core, 'setFailed');
 
-    await checks();
+    await main();
     expect(setFailed).not.toHaveBeenCalled();
   });
 
@@ -72,7 +72,7 @@ describe('health check', () => {
     ];
     const setFailed = vi.spyOn(core, 'setFailed');
 
-    await checks();
+    await main();
     expect(setFailed).toHaveBeenCalledWith("Health check action failed after 0 retries.");
   });
 
@@ -86,7 +86,7 @@ describe('health check', () => {
 
     // Lower the sleep time so the test doesn't timeout.
     setSleepTime(50);
-    await checks();
+    await main();
     expect(setFailed).toHaveBeenCalledWith("Health check action failed after 2 retries.");
   });
 });

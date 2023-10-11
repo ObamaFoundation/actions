@@ -2,12 +2,12 @@
   "name": "health-check",
   "version": "1.0.0",
   "description": "A simple health check to assert health-check json object returns correct values for the build.",
-  "main": "src/main.ts",
+  "main": "src/entry.ts",
   "directories": {
     "test": "tests"
   },
   "scripts": {
-    "build": "ncc build src/main.ts",
+    "build": "ncc build src/entry.ts",
     "all": "npm run build",
     "test": "vitest run"
   },
