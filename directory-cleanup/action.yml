@@ -27,4 +27,4 @@ runs:
           --source=${{ inputs.az-storage-container }} \
           --if-unmodified-since $DELETE_DATE \
           '--pattern=*.js,*.css' \
-          '--dryrun=${{ inputs.dryrun }} 
+          '--dryrun=${{ inputs.dryrun }}' 
