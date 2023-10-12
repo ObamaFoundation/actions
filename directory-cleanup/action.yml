@@ -22,7 +22,7 @@ runs:
       shell: bash
       run: |
         az storage blob delete-batch \
-          --account-name=${{ inputs.az-storage-account }} \
-          --source=${{ inputs.az-storage-container }} \
+          --account-name ${{ inputs.az-storage-account }} \
+          '-s ${{ inputs.az-storage-container }}' \
           --if-unmodified-since $DELETE_DATE \
-          '--pattern=*.js,*.css' 
+          '--pattern *.js,*.css' 
