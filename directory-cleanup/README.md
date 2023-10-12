@@ -32,6 +32,5 @@ uses: ObamaFoundation/actions/directory-cleanup@v2
 with:
   az-storage-account: # No Default (Required)
   az-storage-container: # Default '$web'
-  dryrun: #Default true
   file-retention-days: #default 10
 ```
