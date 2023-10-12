@@ -25,4 +25,4 @@ runs:
           --account-name ${{ inputs.az-storage-account }} \
           '-s ${{ inputs.az-storage-container }}' \
           --if-unmodified-since $DELETE_DATE \
-          '--pattern _app/immutable/*'
+          '--pattern *.js'
