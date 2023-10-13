@@ -2933,9 +2933,9 @@ function sleep() {
         setTimeout(resolve, sleepTime);
     });
 }
-function doCheck(endpoint, jsonAssertions) {
+function doCheck(endpoint, jsonAssertions, tryNum) {
     return __awaiter(this, void 0, void 0, function* () {
-        core.debug(`Health Check for: ${endpoint}`);
+        core.debug(`Health Check try ${tryNum} for: ${endpoint}`);
         try {
             const response = yield fetch(endpoint);
             const results = [];
@@ -2976,7 +2976,8 @@ function doCheck(endpoint, jsonAssertions) {
             core.summary.write();
         }
         catch (error) {
-            core.setFailed(`Action failed with error ${error}`);
+            core.debug(`Action failed with error ${error}`);
+            return false;
         }
         return true;
     });
@@ -2988,7 +2989,7 @@ function main() {
         const retries = core.getInput("retries");
         const retriesNumber = retries ? parseInt(retries) : 0;
         for (let tryIdx = 0; tryIdx <= retriesNumber; tryIdx++) {
-            if (yield doCheck(endpoint, jsonAssertions)) {
+            if (yield doCheck(endpoint, jsonAssertions, tryIdx)) {
                 return;
             }
             if (tryIdx !== retriesNumber) {
