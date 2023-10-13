@@ -8,6 +8,9 @@ inputs:
   json_assertions:
     description: "Assertions to run (multiline, one per line)"
     default: ""
+  retries:
+    description: "Number of times to retry the health Check"
+    default: ""
 
 runs:
   using: node20
