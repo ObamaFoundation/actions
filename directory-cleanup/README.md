@@ -5,6 +5,8 @@ to delete css and js files for each deploy, and also optional to pull files from
 storage container, we can build up a large number of files.  By default this action will use 10 days
 of files to keep on hand.
 
+**Note:** You may see an error regarding "Datetime with no tzinfo will be considered UTC" when running.  This does not prevent the command from running, and a fix has been merged into the cli dev environment on the Azure side. (https://github.com/Azure/azure-cli/pull/27366)
+
 **Note:** This action assumes you have already authenticated in your workflow with the `azure/login`
 action, which should look something like this:
 
