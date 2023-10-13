@@ -32,6 +32,9 @@ vi.mock("@actions/core", () => {
         console.log(msg);
       }
     },
+    warning: (msg) => {
+      console.log(msg);
+    },
     setFailed: (msg) => {
       console.error(msg);
     },
@@ -98,10 +101,12 @@ describe('health check', () => {
       "completed == false",
     ];
     const setFailed = vi.spyOn(core, 'setFailed');
+    const warningSpy = vi.spyOn(core, 'warning');
 
     // Lower the sleep time so the test doesn't timeout.
     setSleepTime(50);
     await main();
+    expect(warningSpy).toHaveBeenCalled();
     expect(setFailed).toHaveBeenCalledWith("Health check action failed after 2 retries.");
   });
 });

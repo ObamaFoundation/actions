@@ -2976,7 +2976,7 @@ function doCheck(endpoint, jsonAssertions, tryNum) {
             core.summary.write();
         }
         catch (error) {
-            core.debug(`Action failed with error ${error}`);
+            core.warning(`Action failed with error ${error}`);
             return false;
         }
         return true;

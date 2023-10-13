@@ -60,7 +60,7 @@ async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: numbe
     )
     core.summary.write()
   } catch (error) {
-    core.debug(`Action failed with error ${error}`);
+    core.warning(`Action failed with error ${error}`);
     return false;
   }
   return true;
