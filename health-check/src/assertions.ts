@@ -19,7 +19,7 @@ const parse_assertion = (input: string): Assertion => {
     const left = input.slice(0, op_idxs[0].idx).trim()
     const op = op_idxs[0].op
     const right = input.slice(op_idxs[0].idx + op.length).trim()
-    
+
     return { left, op, right }
   }
 }

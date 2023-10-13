@@ -1,13 +1,16 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { main, setSleepTime } from './main';
 import * as core from "@actions/core"
 
 const DEBUG = false;  // true will print the healthcheck output to the console
 
-// Modify these values to change the mock's behavior.
-let endpoint = "https://jsonplaceholder.typicode.com/todos/1";
-let assertions = [];
-let retries = "";
+const mockInitialValues = {
+  endpoint: "https://jsonplaceholder.typicode.com/todos/1",
+  assertions: [],
+  retries: "",
+};
+// Set values in this object to change the behavior of the mock. The values are reset for each test.
+let mockValues = Object.assign({}, mockInitialValues);
 
 // This function is hoisted, so might as well just put it at the top level.
 // Mock out all of the functions in the "core" library that the health check uses.
@@ -16,14 +19,14 @@ vi.mock("@actions/core", () => {
     getInput: (key) => {
       switch(key) {
         case 'endpoint':
-          return endpoint;
+          return mockValues.endpoint;
           break;
         case 'retries':
-          return retries;
+          return mockValues.retries;
           break;
       }
     },
-    getMultilineInput: () => assertions,
+    getMultilineInput: () => mockValues.assertions,
     debug: (msg) => {
       if (DEBUG) {
         console.log(msg);
@@ -41,13 +44,11 @@ vi.mock("@actions/core", () => {
 });
 
 describe('health check', () => {
-  afterEach(() => {
-    assertions = [];
-    retries = "";
+  beforeEach(() => {
+    mockValues = Object.assign({}, mockInitialValues);
   })
 
   it('with no assertions', async () => {
-    assertions = [];
     const setFailed = vi.spyOn(core, 'setFailed');
 
     await main();
@@ -55,7 +56,7 @@ describe('health check', () => {
   });
 
   it('with two assertions', async () => {
-    assertions = [
+    mockValues.assertions = [
       "userId == 1",
       "completed == false",
     ];
@@ -66,7 +67,7 @@ describe('health check', () => {
   });
 
   it('correctly fails', async () => {
-    assertions = [
+    mockValues.assertions = [
       "userId == 2",
       "completed == false",
     ];
@@ -77,9 +78,23 @@ describe('health check', () => {
   });
 
   it('correctly fails after 2 retries', async () => {
-    retries = "2";
-    assertions = [
+    mockValues.retries = "2";
+    mockValues.assertions = [
       "userId == 2",
+      "completed == false",
+    ];
+    const setFailed = vi.spyOn(core, 'setFailed');
+
+    // Lower the sleep time so the test doesn't timeout.
+    setSleepTime(50);
+    await main();
+    expect(setFailed).toHaveBeenCalledWith("Health check action failed after 2 retries.");
+  });
+
+  it('invalid assertion', async () => {
+    mockValues.retries = "2";
+    mockValues.assertions = [
+      "userId ?? 1",
       "completed == false",
     ];
     const setFailed = vi.spyOn(core, 'setFailed');

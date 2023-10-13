@@ -15,8 +15,8 @@ function sleep() {
   });
 }
 
-async function doCheck(endpoint, jsonAssertions) {
-  core.debug(`Health Check for: ${endpoint}`)
+async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: number) {
+  core.debug(`Health Check try ${tryNum} for: ${endpoint}`)
   try {
     const response = await fetch(endpoint)
     const results: Result[] = []
@@ -60,7 +60,8 @@ async function doCheck(endpoint, jsonAssertions) {
     )
     core.summary.write()
   } catch (error) {
-    core.setFailed(`Action failed with error ${error}`)
+    core.debug(`Action failed with error ${error}`);
+    return false;
   }
   return true;
 }
@@ -71,7 +72,7 @@ export async function main() {
   const retries = core.getInput("retries");
   const retriesNumber = retries ? parseInt(retries) : 0;
   for (let tryIdx = 0; tryIdx <= retriesNumber; tryIdx++) {
-    if (await doCheck(endpoint, jsonAssertions)) {
+    if (await doCheck(endpoint, jsonAssertions, tryIdx)) {
       return;
     }
     if (tryIdx !== retriesNumber) {
