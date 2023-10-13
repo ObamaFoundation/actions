@@ -20,9 +20,9 @@ runs:
         echo "DELETE_DATE="`date --date='${{inputs.file-retention-days}} day ago' +%F'T'%H:%M'Z'` >> "$GITHUB_ENV"
     - name: Delete old files from previous container
       shell: bash
-      run: |
-        az storage blob delete-batch \
-          --account-name=${{ inputs.az-storage-account }} \
-          --source=${{ inputs.az-storage-container }} \
-          --if-unmodified-since $DELETE_DATE \
-          '--pattern=*.js,*.css' 
+      run: >
+        az storage blob delete-batch 
+        --account-name ${{ inputs.az-storage-account }} 
+        -s '${{ inputs.az-storage-container }}' 
+        --pattern '*.js' 
+        --if-unmodified-since $DELETE_DATE
