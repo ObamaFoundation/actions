@@ -50,8 +50,8 @@ async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: numbe
     }
     // Output Results
     core.debug(`-- Results: ${JSON.stringify(results, null, 2)}`)
-    core.summary.addHeading("Health Check Results")
-    core.summary.addHeading(`For ${endpoint}`, 3)
+    core.summary.addHeading("Health Check Results", 2);
+    core.summary.addLink(`For ${endpoint}`, endpoint);
     core.summary.addTable(
       results.map(({ assertion, result }) => [
         assertion,
