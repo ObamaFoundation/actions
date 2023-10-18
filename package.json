@@ -6,6 +6,6 @@
     "build": "for D in *; do if [ -f \"${D}/package.json\" ]; then ( cd \"$D\" && npm ci && npm run all ); fi; done",
     "test:build": "npm run build && git diff --exit-code",
     "test:actions": "for D in *; do if [ -f \"${D}/package.json\" ]; then ( cd \"$D\" && npm run test ); fi; done",
-    "test": "npm run test:build && npm run test:action"
+    "test": "npm run test:build && npm run test:actions"
   }
 }
