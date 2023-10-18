@@ -7,16 +7,23 @@
     "test": "tests"
   },
   "scripts": {
+    "lint": "eslint .",
     "build": "ncc build src/entry.ts",
-    "all": "npm run build",
+    "all": "npm run lint && npm run build",
     "test": "vitest run"
   },
   "author": "jweinbender@obama.org",
   "license": "ISC",
+  "dependencies": {
+    "@actions/core": "^1.10.0"
+  },
   "devDependencies": {
-    "@actions/core": "^1.10.0",
     "@types/node": "^20.2.4",
+    "@typescript-eslint/eslint-plugin": "^6.8.0",
+    "@typescript-eslint/parser": "^6.8.0",
     "@vercel/ncc": "^0.36.1",
+    "eslint": "^8.39.0",
+    "eslint-config-airbnb-typescript": "^17.1.0",
     "typescript": "^5.0.4",
     "vitest": "^0.34.6"
   }
