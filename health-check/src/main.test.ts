@@ -42,7 +42,7 @@ vi.mock("@actions/core", () => {
       write: () => {},
       addHeading: () => {},
       addTable: () => {},
-      addLink: () => {},
+      addRaw: () => {},
     },
   };
 });
