@@ -6,7 +6,11 @@ step copies the *.html files with the `Cache-Control: no-store` header. Bypassin
 way helps us ensure that the session affinity cookies are set properly by Azure Front Door when
 deployed to our blue/green environment(s).
 
-The second step syncs the remaining files (non-html), deleting files if needed.
+The second step syncs the remaining files (non-html), deleting files if needed and requested by the caller.
+
+An optional step copies the files from the previous storage location to the current location.  This should
+be used for blue/green deployments.  To enable this, both the `copy-from-previous-location` and `last-storage-account`
+must be specified.
 
 Under the hood, the `az storage` command is using `azcopy` and creating a SAS from the login credentials.
 
@@ -38,6 +42,9 @@ uses: ObamaFoundation/actions/upload-static@v1.0
 with:
   az-subscription-id: # No Default (Required)
   az-storage-account: # No Default (Required)
+  copy-from-previous-location: # Default false
+  last-storage-account: #Used for production only to copy files from the blue environment over to green and vice versa (not required)
   az-storage-container: # Default '$web'
   path: # Default 'build'
+  delete-destination: #Default true
 ```
