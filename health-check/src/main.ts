@@ -19,8 +19,7 @@ function outputResults(endpoint: string, results: Result[]) {
   // Output Results
   core.debug(`-- Results: ${JSON.stringify(results, null, 2)}`);
   core.summary.addHeading("Health Check Results", 2);
-  core.summary.addRaw(`For ${endpoint}`, true);
-  core.summary.addBreak();
+  core.summary.addRaw(`<p>For ${endpoint}</p>`, true);
   core.summary.addTable(
     results.map(({ assertion, result }) => [
       assertion,
