@@ -15,7 +15,21 @@ function sleep() {
   });
 }
 
-async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: number) {
+function outputResults(endpoint: string, results: Result[]) {
+  // Output Results
+  core.debug(`-- Results: ${JSON.stringify(results, null, 2)}`);
+  core.summary.addHeading("Health Check Results", 2);
+  core.summary.addRaw(`For ${endpoint}`, true);
+  core.summary.addTable(
+    results.map(({ assertion, result }) => [
+      assertion,
+      result == "pass" ? "✅" : "❌",
+    ]),
+  );
+  core.summary.write();
+}
+
+async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: number, lastTry: boolean) {
   core.debug(`Health Check try ${tryNum} for: ${endpoint}`);
   try {
     const response = await fetch(endpoint);
@@ -37,11 +51,16 @@ async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: numbe
       });
     }
     const responseText = await response.text();
-    console.log(`Response: ${responseText}`);
 
     core.debug(`-- Assertions Count: ${jsonAssertions.length}`);
     if (jsonAssertions.length > 0) {
-      const json = JSON.parse(responseText);
+      let json: Object;
+      try {
+        json = JSON.parse(responseText);
+      } catch (error) {
+        console.log("Invalid JSON from endpoint:", error);
+        return false;
+      }
 
       jsonAssertions.forEach((assertion) => {
         const { left, op, right } = parse(assertion);
@@ -50,19 +69,12 @@ async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: numbe
     }
     if (results.some((r) => r.result == "fail")) {
       console.log("Assertions failed. See summary for details.");
+      if (lastTry) {
+        outputResults(endpoint, results);
+      }
       return false;
     }
-    // Output Results
-    core.debug(`-- Results: ${JSON.stringify(results, null, 2)}`);
-    core.summary.addHeading("Health Check Results", 2);
-    core.summary.addRaw(`For ${endpoint}`, true);
-    core.summary.addTable(
-      results.map(({ assertion, result }) => [
-        assertion,
-        result == "pass" ? "✅" : "❌",
-      ]),
-    );
-    core.summary.write();
+    outputResults(endpoint, results);
   } catch (error) {
     const msg = `Action failed with error ${error}`;
     console.log(msg);
@@ -80,7 +92,7 @@ export async function main() {
   const retriesNumber = retries ? parseInt(retries) : 0;
   for (let tryIdx = 0; tryIdx <= retriesNumber; tryIdx++) {
     console.log("Try:", tryIdx + 1);
-    if (await doCheck(endpoint, jsonAssertions, tryIdx)) {
+    if (await doCheck(endpoint, jsonAssertions, tryIdx, tryIdx === retriesNumber)) {
       return;
     }
     if (tryIdx !== retriesNumber) {

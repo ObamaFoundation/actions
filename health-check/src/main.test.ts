@@ -47,16 +47,20 @@ vi.mock("@actions/core", () => {
   };
 });
 
+let spySetFailed;
+let spyAddTable;
+
 describe("health check", () => {
   beforeEach(() => {
     mockValues = Object.assign({}, mockInitialValues);
+    spySetFailed = vi.spyOn(core, "setFailed");
+    spyAddTable = vi.spyOn(core.summary, "addTable");
   });
 
   it("with no assertions", async () => {
-    const setFailed = vi.spyOn(core, "setFailed");
-
     await main();
-    expect(setFailed).not.toHaveBeenCalled();
+    expect(spySetFailed).not.toHaveBeenCalled();
+    expect(spyAddTable).toHaveBeenCalled();
   });
 
   it("with two assertions", async () => {
@@ -64,10 +68,10 @@ describe("health check", () => {
       "userId == 1",
       "completed == false",
     ];
-    const setFailed = vi.spyOn(core, "setFailed");
 
     await main();
-    expect(setFailed).not.toHaveBeenCalled();
+    expect(spySetFailed).not.toHaveBeenCalled();
+    expect(spyAddTable).toHaveBeenCalled();
   });
 
   it("correctly fails", async () => {
@@ -75,10 +79,10 @@ describe("health check", () => {
       "userId == 2",
       "completed == false",
     ];
-    const setFailed = vi.spyOn(core, "setFailed");
 
     await main();
-    expect(setFailed).toHaveBeenCalledWith("Health check action failed after 0 retries.");
+    expect(spySetFailed).toHaveBeenCalledWith("Health check action failed after 0 retries.");
+    expect(spyAddTable).toHaveBeenCalled();
   });
 
   it("correctly fails after 2 retries", async () => {
@@ -87,12 +91,12 @@ describe("health check", () => {
       "userId == 2",
       "completed == false",
     ];
-    const setFailed = vi.spyOn(core, "setFailed");
 
     // Lower the sleep time so the test doesn't timeout.
     setSleepTime(50);
     await main();
-    expect(setFailed).toHaveBeenCalledWith("Health check action failed after 2 retries.");
+    expect(spySetFailed).toHaveBeenCalledWith("Health check action failed after 2 retries.");
+    expect(spyAddTable).toHaveBeenCalled();
   });
 
   it("invalid assertion", async () => {
@@ -101,13 +105,13 @@ describe("health check", () => {
       "userId ?? 1",
       "completed == false",
     ];
-    const setFailed = vi.spyOn(core, "setFailed");
     const warningSpy = vi.spyOn(core, "warning");
 
     // Lower the sleep time so the test doesn't timeout.
     setSleepTime(50);
     await main();
     expect(warningSpy).toHaveBeenCalled();
-    expect(setFailed).toHaveBeenCalledWith("Health check action failed after 2 retries.");
+    expect(spySetFailed).toHaveBeenCalledWith("Health check action failed after 2 retries.");
+    expect(spyAddTable).not.toHaveBeenCalled();
   });
 });

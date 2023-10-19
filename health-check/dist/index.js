@@ -25961,7 +25961,18 @@ function sleep() {
         setTimeout(resolve, sleepTime);
     });
 }
-function doCheck(endpoint, jsonAssertions, tryNum) {
+function outputResults(endpoint, results) {
+    // Output Results
+    core.debug(`-- Results: ${JSON.stringify(results, null, 2)}`);
+    core.summary.addHeading("Health Check Results", 2);
+    core.summary.addRaw(`For ${endpoint}`, true);
+    core.summary.addTable(results.map(({ assertion, result }) => [
+        assertion,
+        result == "pass" ? "✅" : "❌",
+    ]));
+    core.summary.write();
+}
+function doCheck(endpoint, jsonAssertions, tryNum, lastTry) {
     return __awaiter(this, void 0, void 0, function* () {
         core.debug(`Health Check try ${tryNum} for: ${endpoint}`);
         try {
@@ -25984,10 +25995,16 @@ function doCheck(endpoint, jsonAssertions, tryNum) {
                 });
             }
             const responseText = yield response.text();
-            console.log(`Response: ${responseText}`);
             core.debug(`-- Assertions Count: ${jsonAssertions.length}`);
             if (jsonAssertions.length > 0) {
-                const json = JSON.parse(responseText);
+                let json;
+                try {
+                    json = JSON.parse(responseText);
+                }
+                catch (error) {
+                    console.log("Invalid JSON from endpoint:", error);
+                    return false;
+                }
                 jsonAssertions.forEach((assertion) => {
                     const { left, op, right } = (0,assertions/* parse */.Q)(assertion);
                     results.push((0,assertions/* assert */.h)({ left: json[left], op, right }));
@@ -25995,17 +26012,12 @@ function doCheck(endpoint, jsonAssertions, tryNum) {
             }
             if (results.some((r) => r.result == "fail")) {
                 console.log("Assertions failed. See summary for details.");
+                if (lastTry) {
+                    outputResults(endpoint, results);
+                }
                 return false;
             }
-            // Output Results
-            core.debug(`-- Results: ${JSON.stringify(results, null, 2)}`);
-            core.summary.addHeading("Health Check Results", 2);
-            core.summary.addRaw(`For ${endpoint}`, true);
-            core.summary.addTable(results.map(({ assertion, result }) => [
-                assertion,
-                result == "pass" ? "✅" : "❌",
-            ]));
-            core.summary.write();
+            outputResults(endpoint, results);
         }
         catch (error) {
             const msg = `Action failed with error ${error}`;
@@ -26025,7 +26037,7 @@ function main() {
         const retriesNumber = retries ? parseInt(retries) : 0;
         for (let tryIdx = 0; tryIdx <= retriesNumber; tryIdx++) {
             console.log("Try:", tryIdx + 1);
-            if (yield doCheck(endpoint, jsonAssertions, tryIdx)) {
+            if (yield doCheck(endpoint, jsonAssertions, tryIdx, tryIdx === retriesNumber)) {
                 return;
             }
             if (tryIdx !== retriesNumber) {
