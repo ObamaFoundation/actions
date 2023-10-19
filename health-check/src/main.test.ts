@@ -2,7 +2,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { main, setSleepTime } from "./main";
 import * as core from "@actions/core";
 
-const DEBUG = false;  // true will print the healthcheck output to the console
+// Whether to print debug info to the console while running the test.
+const DEBUG = true;
 
 const mockInitialValues = {
   endpoint: "https://jsonplaceholder.typicode.com/todos/1",
@@ -60,7 +61,7 @@ describe("health check", () => {
   it("with no assertions", async () => {
     await main();
     expect(spySetFailed).not.toHaveBeenCalled();
-    expect(spyAddTable).toHaveBeenCalled();
+    expect(spyAddTable).toHaveBeenCalledOnce();
   });
 
   it("with two assertions", async () => {
@@ -71,7 +72,7 @@ describe("health check", () => {
 
     await main();
     expect(spySetFailed).not.toHaveBeenCalled();
-    expect(spyAddTable).toHaveBeenCalled();
+    expect(spyAddTable).toHaveBeenCalledOnce();
   });
 
   it("correctly fails", async () => {
@@ -82,7 +83,7 @@ describe("health check", () => {
 
     await main();
     expect(spySetFailed).toHaveBeenCalledWith("Health check action failed after 0 retries.");
-    expect(spyAddTable).toHaveBeenCalled();
+    expect(spyAddTable).toHaveBeenCalledOnce();
   });
 
   it("correctly fails after 2 retries", async () => {
@@ -96,7 +97,7 @@ describe("health check", () => {
     setSleepTime(50);
     await main();
     expect(spySetFailed).toHaveBeenCalledWith("Health check action failed after 2 retries.");
-    expect(spyAddTable).toHaveBeenCalled();
+    expect(spyAddTable).toHaveBeenCalledOnce();
   });
 
   it("invalid assertion", async () => {
@@ -105,13 +106,27 @@ describe("health check", () => {
       "userId ?? 1",
       "completed == false",
     ];
-    const warningSpy = vi.spyOn(core, "warning");
+    const spyWarning = vi.spyOn(core, "warning");
 
     // Lower the sleep time so the test doesn't timeout.
     setSleepTime(50);
     await main();
-    expect(warningSpy).toHaveBeenCalled();
+    expect(spyWarning).toHaveBeenCalled();
     expect(spySetFailed).toHaveBeenCalledWith("Health check action failed after 2 retries.");
+    expect(spyAddTable).not.toHaveBeenCalled();
+  });
+
+  it("invalid JSON", async () => {
+    mockValues.retries = "1";
+    mockValues.endpoint = "https://jsonplaceholder.typicode.com"
+    mockValues.assertions = [
+      "completed == false",
+    ];
+
+    // Lower the sleep time so the test doesn't timeout.
+    setSleepTime(50);
+    await main();
+    expect(spySetFailed).toHaveBeenCalledWith("Health check action failed after 1 retries.");
     expect(spyAddTable).not.toHaveBeenCalled();
   });
 });

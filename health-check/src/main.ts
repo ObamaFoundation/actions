@@ -29,6 +29,13 @@ function outputResults(endpoint: string, results: Result[]) {
   core.summary.write();
 }
 
+function logFailure(msg: string, lastTry: boolean) {
+  console.log(msg);
+  if (lastTry) {
+    core.warning(msg);
+  }
+}
+
 async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: number, lastTry: boolean) {
   core.debug(`Health Check try ${tryNum} for: ${endpoint}`);
   try {
@@ -42,7 +49,7 @@ async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: numbe
         result: "fail",
         assertion: `Status code == ${response.status}`,
       });
-      console.log("Invalid status code:", response.status);
+      logFailure("Invalid status code: " + response.status, lastTry);
       return false;
     } else {
       results.push({
@@ -58,7 +65,7 @@ async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: numbe
       try {
         json = JSON.parse(responseText);
       } catch (error) {
-        console.log("Invalid JSON from endpoint:", error);
+        logFailure("Invalid JSON from endpoint: " + error.toString(), lastTry);
         return false;
       }
 
@@ -68,10 +75,10 @@ async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: numbe
       });
     }
     if (results.some((r) => r.result == "fail")) {
-      console.log("Assertions failed. See summary for details.");
       if (lastTry) {
         outputResults(endpoint, results);
       }
+      logFailure("Assertions failed. See summary for details.", lastTry);
       return false;
     }
     outputResults(endpoint, results);

@@ -25972,6 +25972,12 @@ function outputResults(endpoint, results) {
     ]));
     core.summary.write();
 }
+function logFailure(msg, lastTry) {
+    console.log(msg);
+    if (lastTry) {
+        core.warning(msg);
+    }
+}
 function doCheck(endpoint, jsonAssertions, tryNum, lastTry) {
     return __awaiter(this, void 0, void 0, function* () {
         core.debug(`Health Check try ${tryNum} for: ${endpoint}`);
@@ -25985,7 +25991,7 @@ function doCheck(endpoint, jsonAssertions, tryNum, lastTry) {
                     result: "fail",
                     assertion: `Status code == ${response.status}`,
                 });
-                console.log("Invalid status code:", response.status);
+                logFailure("Invalid status code: " + response.status, lastTry);
                 return false;
             }
             else {
@@ -26002,7 +26008,7 @@ function doCheck(endpoint, jsonAssertions, tryNum, lastTry) {
                     json = JSON.parse(responseText);
                 }
                 catch (error) {
-                    console.log("Invalid JSON from endpoint:", error);
+                    logFailure("Invalid JSON from endpoint: " + error.toString(), lastTry);
                     return false;
                 }
                 jsonAssertions.forEach((assertion) => {
@@ -26011,10 +26017,10 @@ function doCheck(endpoint, jsonAssertions, tryNum, lastTry) {
                 });
             }
             if (results.some((r) => r.result == "fail")) {
-                console.log("Assertions failed. See summary for details.");
                 if (lastTry) {
                     outputResults(endpoint, results);
                 }
+                logFailure("Assertions failed. See summary for details.", lastTry);
                 return false;
             }
             outputResults(endpoint, results);
