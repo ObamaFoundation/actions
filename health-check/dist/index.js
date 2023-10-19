@@ -25984,7 +25984,7 @@ function doCheck(endpoint, jsonAssertions, tryNum) {
                 });
             }
             const responseText = yield response.text();
-            core.debug(`Response: ${responseText}`);
+            console.log(`Response: ${responseText}`);
             core.debug(`-- Assertions Count: ${jsonAssertions.length}`);
             if (jsonAssertions.length > 0) {
                 const json = JSON.parse(responseText);
