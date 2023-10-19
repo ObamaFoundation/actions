@@ -119,7 +119,7 @@ describe("health check", () => {
 
   it("invalid JSON", async () => {
     mockValues.retries = "1";
-    mockValues.endpoint = "https://jsonplaceholder.typicode.com"
+    mockValues.endpoint = "https://jsonplaceholder.typicode.com";
     mockValues.assertions = [
       "completed == false",
     ];
