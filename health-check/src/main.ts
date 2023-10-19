@@ -37,7 +37,7 @@ async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: numbe
       });
     }
     const responseText = await response.text();
-    core.debug(`Response: ${responseText}`);
+    console.log(`Response: ${responseText}`);
 
     core.debug(`-- Assertions Count: ${jsonAssertions.length}`);
     if (jsonAssertions.length > 0) {
