@@ -44,6 +44,7 @@ vi.mock("@actions/core", () => {
       addHeading: () => {},
       addTable: () => {},
       addRaw: () => {},
+      addBreak: () => {},
     },
   };
 });
