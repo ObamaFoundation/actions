@@ -1,0 +1,77 @@
+inputs:
+  environment:
+    description: "The environment path relative to the environments directory"
+    required: true
+  environments_dir:
+    description: "Environments directory path"
+    required: false
+    default: "environments"
+  upload_plan:
+    description: "Whether or not to upload the plan to the artifact store"
+    required: false
+    default: "true"
+
+name: "Terraform Plan"
+description: "Runs terraform plan and outputs the plan data if there are changes to apply"
+
+outputs:
+  has_changes:
+    description: "Whether or not there are changes to apply"
+    value: ${{ steps.plan.outputs.has_changes }}
+  plan_data:
+    description: "The plan data"
+    value: ${{ steps.plan.outputs.plan_data }}
+
+runs:
+  using: composite
+  steps:
+    - uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_wrapper: false
+    - name: Terraform init
+      shell: bash
+      run: terraform -chdir=${{inputs.environments_dir}}/${{ inputs.environment }} init
+
+    - name: Terraform validate
+      shell: bash
+      run: terraform -chdir=${{inputs.environments_dir}}/${{ inputs.environment }} validate
+
+    - name: Terraform plan
+      id: plan
+      shell: bash
+      run: |
+        terraform \
+          -chdir=${{inputs.environments_dir}}/${{ inputs.environment }} \
+          plan \
+          -input=false \
+          -lock=false \
+          -no-color \
+          -out=tfplan \
+          -detailed-exitcode > log.txt || EXIT_CODE=$?
+
+        if [[ ${EXIT_CODE:-0} -eq 1 ]]; then
+          echo "Error running plan."
+          exit 1
+        fi
+
+        HAS_CHANGES=false && [[ ${EXIT_CODE:-0} -eq 2 ]] && HAS_CHANGES=true
+        echo "has_changes=$HAS_CHANGES" >> $GITHUB_OUTPUT
+
+        if [[ ${HAS_CHANGES} == false ]]; then
+          echo "[${{ inputs.environment }}] No changes detected." >> $GITHUB_STEP_SUMMARY
+        else
+          echo "[${{ inputs.environment }}] Plan changes detected." >> $GITHUB_STEP_SUMMARY
+          echo "Terraform plan output:" >> $GITHUB_STEP_SUMMARY
+          
+          echo "\`\`\`terraform" >> $GITHUB_STEP_SUMMARY
+          cat log.txt >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        fi
+        exit 0
+    - name: Upload plan
+      if: ${{ inputs.upload_plan == 'true' && steps.plan.outputs.has_changes == 'true' }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: tfplan-${{ github.run_id }}-${{ inputs.environment }}
+        path: ${{ inputs.environments_dir }}/${{ inputs.environment }}/tfplan
+        retention-days: 2
