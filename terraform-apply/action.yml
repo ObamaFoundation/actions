@@ -19,10 +19,6 @@ runs:
     - name: Download plan
       id: download
       uses: actions/download-artifact@v3
-    - name: inspect ls
-      shell: bash
-      run: |
-        ls -la
     - name: Check for Plan Artifact
       shell: bash
       id: check
