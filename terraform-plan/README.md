@@ -40,7 +40,7 @@ With the defaults:
 uses: ObamaFoundation/actions/terraform-plan@X.Y.Z
 with:
   environment: "myterraformfolder" #(required)
-  environment_dir: 'environments' #(default)
+  environments_dir: 'environments' #(default)
   upload_plan: false #(default)
 ```
 
