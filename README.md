@@ -39,7 +39,7 @@ To tag a commit:
   * Delete the temporary pull request.
   * Continue below.
 * While still on `main` branch in the `actions` repo, move the minor release with: `git tag -f <vX.Y>`
-* And push that tag change: `git push origin <vX.Y>`
+* And push that tag change: `git push -f origin <vX.Y>`
 
 Note: To see where a tag is currently pointing (locally): `git rev-list -n 1 vX.Y.Z`.
 
