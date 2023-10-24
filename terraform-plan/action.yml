@@ -9,7 +9,7 @@ inputs:
   upload_plan:
     description: "Whether or not to upload the plan to the artifact store"
     required: false
-    default: "true"
+    default: "false"
 
 name: "Terraform Plan"
 description: "Runs terraform plan and outputs the plan data if there are changes to apply"

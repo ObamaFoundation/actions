@@ -1,5 +1,7 @@
 # Run Terraform Plan (& Apply)
 
+** DEPRECATED ** You should use the discrete `terraform-plan` and `terraform-apply` actions in this repo instead. This action is no longer maintained.
+
 This action runs Terraform Plan and (optionally) Apply against a specified subdirectory (component).
 
 The action assumes you have a properly configured backend and runs `terraform init` before any other actions.
@@ -9,13 +11,13 @@ The action assumes you have a properly configured backend and runs `terraform in
 This is probably what you'll need:
 
 ```yaml
-...
-env: 
+
+---
+env:
   ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-...
 ```
 
 See the [action.yml](./action.yml) file for parameter info.
@@ -27,7 +29,7 @@ The following minimal example will run this action against the `myterraformfolde
 ```yaml
 uses: ObamaFoundation/actions/terraform-plan-apply@v1
 with:
-  component: 'myterraformfolder'
+  component: "myterraformfolder"
 ```
 
 To run the action AND apply the changes (DANGER! Make sure you have the right branch and ref rules set!):
@@ -35,7 +37,7 @@ To run the action AND apply the changes (DANGER! Make sure you have the right br
 ```yaml
 uses: ObamaFoundation/actions/terraform-plan-apply@v1
 with:
-  component: 'myterraformfolder'
+  component: "myterraformfolder"
   apply: true
 ```
 
@@ -44,8 +46,8 @@ If for some reason you want to skip the validation and fmt steps, you can pass t
 ```yaml
 uses: ObamaFoundation/actions/terraform-plan-apply@v1
 with:
-  component: 'myterraformfolder'  #(required)
-  apply: false                    #(default)
-  skip_fmt: false                 #(default)
-  skip_validate: false            #(default)
+  component: "myterraformfolder" #(required)
+  apply: false #(default)
+  skip_fmt: false #(default)
+  skip_validate: false #(default)
 ```
