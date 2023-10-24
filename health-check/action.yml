@@ -8,7 +8,10 @@ inputs:
   json_assertions:
     description: "Assertions to run (multiline, one per line)"
     default: ""
+  retries:
+    description: "Number of times to retry the health Check"
+    default: ""
 
 runs:
-  using: node16
+  using: node20  # For some reason Node 18 isn't an option, so use 20 for now
   main: 'dist/index.js'

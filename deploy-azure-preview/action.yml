@@ -19,7 +19,7 @@ runs:
         publish-profile: ${{ inputs.azure-publish-profile }}
         package: ./preview
         slot-name: ${{ inputs.slot-name }}
-    
+
     - name: Upload to production Webapp
       if: inputs.slot-name == 'prod'
       uses: azure/webapps-deploy@v2

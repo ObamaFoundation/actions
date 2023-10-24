@@ -3,7 +3,9 @@
   "version": "1",
   "description": "Monorepo for custom actions",
   "scripts": {
-    "build": "for D in *; do if [ -f \"${D}/package.json\" ]; then ( cd \"$D\" && npm ci && npm run all ); fi; done",
-    "test": "npm run build && git diff --exit-code"
+    "build": "for D in *; do if [ -f \"${D}/package.json\" ]; then cd \"$D\" && npm ci && npm run all || exit 1; cd ..; fi; done",
+    "test:build": "npm run build && git diff --exit-code",
+    "test:actions": "for D in *; do if [ -f \"${D}/package.json\" ]; then cd \"$D\" && npm run test || exit 1; cd ..; fi; done",
+    "test": "npm run test:build && npm run test:actions"
   }
 }

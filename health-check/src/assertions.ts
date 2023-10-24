@@ -1,37 +1,37 @@
-import { Result, Assertion, Op, OpIndex } from "./types"
+import { Result, Assertion, Op, OpIndex } from "./types";
 
-const OPS = ["==", "!=", "<", ">", "<=", ">="]
+const OPS = ["==", "!=", "<", ">", "<=", ">="];
 
-const op_index = (input: string) => (op: Op) => ({ op, idx: input.indexOf(op) })
-const found_indexes = ({ idx }) => idx > 0
+const opIndex = (input: string) => (op: Op) => ({ op, idx: input.indexOf(op) });
+const foundIndexes = ({ idx }) => idx > 0;
 
-const parse_assertion = (input: string): Assertion => {  
+const parseAssertion = (input: string): Assertion => {  
   // We just want to get the index of the first op in the string
   // so we can split the string into left and right.
   // We need the original Op to know its length.
-  const op_idxs: OpIndex[] = OPS
-    .map(op_index(input))
-    .filter(found_indexes)
+  const opIdxs: OpIndex[] = OPS
+    .map(opIndex(input))
+    .filter(foundIndexes);
 
-  if (op_idxs.length == 0) {
-    throw new Error(`Invalid assertion: ${input}. No valid Operator found.`)
+  if (opIdxs.length == 0) {
+    throw new Error(`Invalid assertion: ${input}. No valid Operator found.`);
   } else {
-    const left = input.slice(0, op_idxs[0].idx).trim()
-    const op = op_idxs[0].op
-    const right = input.slice(op_idxs[0].idx + op.length).trim()
-    
-    return { left, op, right }
-  }
-}
+    const left = input.slice(0, opIdxs[0].idx).trim();
+    const op = opIdxs[0].op;
+    const right = input.slice(opIdxs[0].idx + op.length).trim();
 
-const evaluate_assertion = ({ left, op, right }): Result => {
-  const expression = `'${left}' ${op} '${right}'`
+    return { left, op, right };
+  }
+};
+
+const evaluateAssertion = ({ left, op, right }): Result => {
+  const expression = `'${left}' ${op} '${right}'`;
   if (eval(expression)) {
-    return { assertion: expression, result: "pass" }
+    return { assertion: expression, result: "pass" };
   } else {
-    return { assertion: expression, result: "fail" }
+    return { assertion: expression, result: "fail" };
   }
-}
+};
 
-export const assert = (assertion: Assertion) => evaluate_assertion(assertion)
-export const parse = (assertion_string: string) => parse_assertion(assertion_string)
+export const assert = (assertion: Assertion) => evaluateAssertion(assertion);
+export const parse = (assertion_string: string) => parseAssertion(assertion_string);
