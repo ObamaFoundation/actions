@@ -13,5 +13,5 @@ inputs:
     default: ""
 
 runs:
-  using: node20
+  using: node20  # For some reason Node 18 isn't an option, so use 20 for now
   main: 'dist/index.js'
