@@ -13,8 +13,7 @@ inputs:
     required: false
   copy-from-previous-location:
     description: If true, copy files from last-storage-account to az-storage-account
-    type: boolean
-    default: false
+    default: "false"
   az-storage-container:
     description: "Azure Blob Storage container name"
     default: "$web"
