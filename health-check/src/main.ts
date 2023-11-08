@@ -83,9 +83,7 @@ async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: numbe
     }
     outputResults(endpoint, results);
   } catch (error) {
-    const msg = `Action failed with error ${error}`;
-    console.log(msg);
-    core.warning(msg);
+    logFailure(`Action failed with error ${error}`, lastTry);
     return false;
   }
   console.log("Assertions passed. See summary for details.");
