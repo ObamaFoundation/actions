@@ -26026,9 +26026,7 @@ function doCheck(endpoint, jsonAssertions, tryNum, lastTry) {
             outputResults(endpoint, results);
         }
         catch (error) {
-            const msg = `Action failed with error ${error}`;
-            console.log(msg);
-            core.warning(msg);
+            logFailure(`Action failed with error ${error}`, lastTry);
             return false;
         }
         console.log("Assertions passed. See summary for details.");
