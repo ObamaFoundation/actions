@@ -77,8 +77,10 @@ async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: numbe
     if (results.some((r) => r.result == "fail")) {
       if (lastTry) {
         outputResults(endpoint, results);
+        logFailure("Assertions failed. See summary for details.", lastTry);
+      } else {
+        console.log("Assertions failed.");
       }
-      logFailure("Assertions failed. See summary for details.", lastTry);
       return false;
     }
     outputResults(endpoint, results);
