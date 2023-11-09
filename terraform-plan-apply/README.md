@@ -27,7 +27,7 @@ See the [action.yml](./action.yml) file for parameter info.
 The following minimal example will run this action against the `myterraformfolder` subdirectory:
 
 ```yaml
-uses: ObamaFoundation/actions/terraform-plan-apply@v1
+uses: ObamaFoundation/actions/terraform-plan-apply@v2.3
 with:
   component: "myterraformfolder"
 ```
@@ -35,7 +35,7 @@ with:
 To run the action AND apply the changes (DANGER! Make sure you have the right branch and ref rules set!):
 
 ```yaml
-uses: ObamaFoundation/actions/terraform-plan-apply@v1
+uses: ObamaFoundation/actions/terraform-plan-apply@v2.3
 with:
   component: "myterraformfolder"
   apply: true
@@ -44,7 +44,7 @@ with:
 If for some reason you want to skip the validation and fmt steps, you can pass the `skip_validation` and `skip_fmt` variables too. The full interface is as follows:
 
 ```yaml
-uses: ObamaFoundation/actions/terraform-plan-apply@v1
+uses: ObamaFoundation/actions/terraform-plan-apply@v2.3
 with:
   component: "myterraformfolder" #(required)
   apply: false #(default)

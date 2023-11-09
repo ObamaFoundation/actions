@@ -9,7 +9,7 @@ See the [action.yml](./action.yml) file for parameter info.
 ## Example usage
 
 ```yaml
-uses: ObamaFoundation/actions/deploy-azure-preview@v1
+uses: ObamaFoundation/actions/deploy-azure-preview@v2.3
 with:
   gh-env: 'develop'
   azure-publish-profile: ${{ secrets.PUBLISH_PROFILE }}
