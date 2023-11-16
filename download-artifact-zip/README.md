@@ -8,7 +8,7 @@ See the [action.yml](./action.yml) file for parameter info.
 ## Example usage
 
 ```yaml
-uses: ObamaFoundation/actions/download-artifact-zip@v1.0
+uses: ObamaFoundation/actions/download-artifact-zip@v2.3
 with:
   artifact_name: 'filename'
 ```

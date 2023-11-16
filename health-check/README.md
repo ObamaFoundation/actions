@@ -21,7 +21,7 @@ See the [action.yml](./action.yml) file for parameter info.
 A minimal example that only checks for a `200` response from the given endpoint:
 
 ```yaml
-- uses: ObamaFoundation/actions/health-check@v1
+- uses: ObamaFoundation/actions/health-check@v2.3
     with:
       endpoint: "https://www.example.com/health-check"
 ```
@@ -37,7 +37,7 @@ A more complete example that also asserts the response JSON object contains:
 ```
 
 ```yaml
-- uses: ObamaFoundation/actions/health-check@v1
+- uses: ObamaFoundation/actions/health-check@v2.3
     with:
       endpoint: "https://www.example.com/health-check"
       json_assertions: |

@@ -7,7 +7,7 @@ See the [action.yml](./action.yml) file for parameter info.
 ## Example usage
 
 ```yaml
-uses: ObamaFoundation/actions/upload-artifact-zip@v1.0
+uses: ObamaFoundation/actions/upload-artifact-zip@v2.3
 with:
   artifact_name: 'filename'
   paths: build .svelte-kit

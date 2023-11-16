@@ -17,7 +17,7 @@ See the [action.yml](./action.yml) file for parameter info.
 
 ```yaml
 # Minimal Example
-uses: ObamaFoundation/actions/purge-cdn-classic@v1.0
+uses: ObamaFoundation/actions/purge-cdn-classic@v2.3
 with:
   resource-group: of-obama-org
   profile-name: dev-obama-org-CDN
@@ -27,7 +27,7 @@ with:
 The complete interface with defaults is as follows:
 
 ```yaml
-uses: ObamaFoundation/actions/purge-cdn-classic@v1.0
+uses: ObamaFoundation/actions/purge-cdn-classic@v2.3
 with:
   resource-group:   # Required
   profile-name:     # Required
