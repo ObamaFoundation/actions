@@ -15,7 +15,7 @@ runs:
     - name: Create .npmrc
       if: inputs.read-packages-token
       shell: bash
-      run: "[ -f .npmrc.example ] && cp .npmrc.example .npmrc && sed -i 's/gh_read_packages_token_from_lastpass/${ inputs.read-packages-token }/g' .npmrc"
+      run: "[ -f .npmrc.example ] && cp .npmrc.example .npmrc && sed -i 's/<gh_read_packages_token_from_lastpass>/${ inputs.read-packages-token }/g' .npmrc"
     - name: Install dependencies
       shell: bash
       run: npm ci
