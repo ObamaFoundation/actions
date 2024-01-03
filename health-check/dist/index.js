@@ -25982,7 +25982,7 @@ function doCheck(endpoint, jsonAssertions, tryNum, lastTry) {
     return __awaiter(this, void 0, void 0, function* () {
         core.debug(`Health Check try ${tryNum} for: ${endpoint}`);
         try {
-            const response = yield fetch(endpoint, { headers: { 'cache-control': 'no-cache' } });
+            const response = yield fetch(endpoint, { headers: { "cache-control": "no-cache" } });
             const results = [];
             // Status Checks
             core.debug(`-- Status Check: ${response.status}`);
