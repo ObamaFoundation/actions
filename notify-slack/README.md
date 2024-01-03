@@ -10,7 +10,7 @@ See the [action.yml](./action.yml) file for parameter info.
 notify-success:
     needs: [id-of-previous-job]
     if: success()
-    uses: ObamaFoundation/actions/notify-slack@v1
+    uses: ObamaFoundation/actions/notify-slack@v2.3
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ERRORS_WEBHOOK_URL }}
     with:

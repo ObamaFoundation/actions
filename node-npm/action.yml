@@ -1,14 +1,21 @@
 name: Setup Node and NPM
 description: Installs Node and NPM packages and automatically caches based on package-lock.json.
 
+inputs:
+  read-packages-token:
+    description: "Token for reading the OF private npm registry on Github"
+
 runs:
   using: "composite"
   steps:
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
-        node-version: 18
+        node-version: 20
         cache: 'npm'
-
+    - name: Create .npmrc
+      if: inputs.read-packages-token
+      shell: bash
+      run: "[ -f .npmrc.example ] && cp .npmrc.example .npmrc && sed -i 's/<gh_read_packages_token_from_lastpass>/${{ inputs.read-packages-token }}/g' .npmrc"
     - name: Install dependencies
       shell: bash
-      run: npm ci --legacy-peer-deps=true
+      run: npm ci

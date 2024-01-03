@@ -29,7 +29,7 @@ See the [action.yml](./action.yml) file for parameter info.
 ## Example usage
 
 ```yaml
-uses: ObamaFoundation/actions/upload-static@v1.0
+uses: ObamaFoundation/actions/upload-static@v2.3
 with:
   az-subscription-id: '<guid-for-subscription>'
   az-storage-account: 'blueobamaorg'
@@ -38,7 +38,7 @@ with:
 The complete interface with defaults is as follows:
 
 ```yaml
-uses: ObamaFoundation/actions/upload-static@v1.0
+uses: ObamaFoundation/actions/upload-static@v2.3
 with:
   az-subscription-id: # No Default (Required)
   az-storage-account: # No Default (Required)

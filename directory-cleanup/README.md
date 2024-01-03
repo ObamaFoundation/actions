@@ -22,7 +22,7 @@ See the [action.yml](./action.yml) file for parameter info.
 ## Example usage
 
 ```yaml
-uses: ObamaFoundation/actions/directory-cleanup@v2
+uses: ObamaFoundation/actions/directory-cleanup@v2.3
 with:
   az-storage-account: 'blueobamaorg'
 ```
@@ -30,7 +30,7 @@ with:
 The complete interface with defaults is as follows:
 
 ```yaml
-uses: ObamaFoundation/actions/directory-cleanup@v2
+uses: ObamaFoundation/actions/directory-cleanup@v2.3
 with:
   az-storage-account: # No Default (Required)
   az-storage-container: # Default '$web'

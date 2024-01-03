@@ -13,12 +13,12 @@ jobs:
     name: Test compile
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref }}
-      - uses: actions/setup-node@v3
+          show-progress: false
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
           cache: "npm"
       - name: Install dependencies
         run: npm ci
@@ -29,7 +29,9 @@ jobs:
     env:
       artifact_name: test-upload-download-${{ github.run_id }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          show-progress: false
       - name: Create test files
         shell: bash
         run: >
@@ -60,7 +62,9 @@ jobs:
     name: Artifact does not exist
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          show-progress: false
       - uses: ./download-artifact-zip
         id: download
         with:
@@ -74,7 +78,9 @@ jobs:
     name: Health check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          show-progress: false
       - uses: ./health-check
         with:
           endpoint: https://www.example.com

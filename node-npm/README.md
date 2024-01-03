@@ -5,5 +5,5 @@ Installs Node and NPM packages and automatically caches based on package-lock.js
 ## Example usage
 
 ```yaml
-uses: ObamaFoundation/actions/node-npm@v1
+uses: ObamaFoundation/actions/node-npm@v2.3
 ```
