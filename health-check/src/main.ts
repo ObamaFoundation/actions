@@ -39,7 +39,7 @@ function logFailure(msg: string, lastTry: boolean) {
 async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: number, lastTry: boolean) {
   core.debug(`Health Check try ${tryNum} for: ${endpoint}`);
   try {
-    const response = await fetch(endpoint);
+    const response = await fetch(endpoint, { headers: { 'cache-control': 'no-cache' }});
     const results: Result[] = [];
 
     // Status Checks
