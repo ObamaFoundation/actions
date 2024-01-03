@@ -25982,7 +25982,7 @@ function doCheck(endpoint, jsonAssertions, tryNum, lastTry) {
     return __awaiter(this, void 0, void 0, function* () {
         core.debug(`Health Check try ${tryNum} for: ${endpoint}`);
         try {
-            const response = yield fetch(endpoint);
+            const response = yield fetch(endpoint, { headers: { "cache-control": "no-cache" } });
             const results = [];
             // Status Checks
             core.debug(`-- Status Check: ${response.status}`);
@@ -26019,16 +26019,17 @@ function doCheck(endpoint, jsonAssertions, tryNum, lastTry) {
             if (results.some((r) => r.result == "fail")) {
                 if (lastTry) {
                     outputResults(endpoint, results);
+                    logFailure("Assertions failed. See summary for details.", lastTry);
                 }
-                logFailure("Assertions failed. See summary for details.", lastTry);
+                else {
+                    console.log("Assertions failed.");
+                }
                 return false;
             }
             outputResults(endpoint, results);
         }
         catch (error) {
-            const msg = `Action failed with error ${error}`;
-            console.log(msg);
-            core.warning(msg);
+            logFailure(`Action failed with error ${error}`, lastTry);
             return false;
         }
         console.log("Assertions passed. See summary for details.");

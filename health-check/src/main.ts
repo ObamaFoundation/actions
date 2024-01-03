@@ -39,7 +39,7 @@ function logFailure(msg: string, lastTry: boolean) {
 async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: number, lastTry: boolean) {
   core.debug(`Health Check try ${tryNum} for: ${endpoint}`);
   try {
-    const response = await fetch(endpoint);
+    const response = await fetch(endpoint, { headers: { "cache-control": "no-cache" } });
     const results: Result[] = [];
 
     // Status Checks
@@ -77,15 +77,15 @@ async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: numbe
     if (results.some((r) => r.result == "fail")) {
       if (lastTry) {
         outputResults(endpoint, results);
+        logFailure("Assertions failed. See summary for details.", lastTry);
+      } else {
+        console.log("Assertions failed.");
       }
-      logFailure("Assertions failed. See summary for details.", lastTry);
       return false;
     }
     outputResults(endpoint, results);
   } catch (error) {
-    const msg = `Action failed with error ${error}`;
-    console.log(msg);
-    core.warning(msg);
+    logFailure(`Action failed with error ${error}`, lastTry);
     return false;
   }
   console.log("Assertions passed. See summary for details.");
