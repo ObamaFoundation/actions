@@ -14,6 +14,9 @@ inputs:
   content-paths:
     description: "Space-separated list of content paths to purge"
     default: "/*"
+  no-wait:
+    description: "Whether to wait for the long-running operation to finish"
+    default: false
 
 runs:
   using: composite
@@ -27,7 +30,8 @@ runs:
             --resource-group ${{ inputs.resource-group }} \
             --profile-name ${{ inputs.profile-name }} \
             --name ${{ inputs.endpoint-name }} \
-            --content-paths ${{ inputs.content-paths }} &&
+            --content-paths ${{ inputs.content-paths }} \
+            --no-wait ${{ inputs.no-wait }} &&
             echo "Successfully purged CDN: \
               \`${{ inputs.profile-name }}/${{ inputs.endpoint-name }}\`" >> $GITHUB_STEP_SUMMARY ||
             echo "Failed to purge CDN: \
