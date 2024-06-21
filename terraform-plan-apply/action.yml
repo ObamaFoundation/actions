@@ -23,7 +23,7 @@ runs:
     - name: Terraform init
       id: init
       shell: bash
-      run: terraform -chdir=${{ inputs.component }} init
+      run: terraform -chdir=${{ inputs.component }} init --update
 
     #  Skippables. Usually we should run them, though.
     - name: Terraform fmt
