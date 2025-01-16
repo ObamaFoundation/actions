@@ -36,12 +36,23 @@ runs:
       id: validate
       shell: bash
       run: terraform -chdir=${{ inputs.component }} validate
-
-    # We always run plan.
+      
     - name: Terraform plan
+      if: ${{ inputs.apply == 'false' }}
       id: plan
       shell: bash
-      run: terraform -chdir=${{ inputs.component }} plan
+      run: |
+        terraform -chdir=${{ inputs.component }} \
+          -refresh=false \
+          -lock=false \
+          -detailed-exitcode \
+          plan ||
+        if [ $? -eq 2 ]; then
+          terraform -chdir=${{ inputs.component }} -out=${{ inputs.component }}.tfplan plan
+        else
+          echo "Failed to run `terraform plan` >&2 
+          exit 1
+        fi
 
     # DANGER: Only apply when explicitly instructed.
     - name: Terraform apply
