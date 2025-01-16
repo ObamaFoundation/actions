@@ -33,7 +33,6 @@ async function run() {
       );
       core.setOutput("exists", true);
     } catch (err) {
-      core.info(`Error ${err}`);
       core.info(`Artifact ${artifactName} does not exist.`);
       core.setOutput("exists", false);
       return;
@@ -51,5 +50,4 @@ async function run() {
     core.setFailed(err.message);
   }
 }
-
 run();
