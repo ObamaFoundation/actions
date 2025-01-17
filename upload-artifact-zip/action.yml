@@ -20,7 +20,7 @@ runs:
       shell: bash
     - run: zip -rq tmp/${{ inputs.zip-name }} ${{ inputs.paths }}
       shell: bash
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.artifact-name }}
         path: tmp/${{ inputs.zip-name }}

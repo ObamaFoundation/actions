@@ -7,16 +7,16 @@
  * Inspiration from https://github.com/xSAVIKx/artifact-exists-action
  */
 
-const core = require('@actions/core');
-const artifact = require('@actions/artifact');
-const io = require('@actions/io');
-const exec = require('@actions/exec');
+const core = require("@actions/core");
+const artifact = require("@actions/artifact");
+const io = require("@actions/io");
+const exec = require("@actions/exec");
 
 async function run() {
-  const tempDir = 'tmp';
+  const tempDir = "tmp";
   try {
     const artifactName = core.getInput("artifact-name", { required: true });
-    const zipName = core.getInput("zip-name");  // Default value set in action.yml
+    const zipName = core.getInput("zip-name"); // Default value set in action.yml
     await io.mkdirP(tempDir);
     const tempArtifactPath = `${tempDir}/${artifactName}`;
     const artifactClient = artifact.create();
@@ -28,7 +28,9 @@ async function run() {
         tempArtifactPath,
         downloadOptions
       );
-      core.info(`Artifact ${downloadResponse.artifactName} exists. Unzipping...`);
+      core.info(
+        `Artifact ${downloadResponse.artifactName} exists. Unzipping...`
+      );
       core.setOutput("exists", true);
     } catch (err) {
       core.info(`Artifact ${artifactName} does not exist.`);
@@ -36,14 +38,16 @@ async function run() {
       return;
     }
 
-    const zipResult = await exec.exec('unzip', ['-oq', `${tempArtifactPath}/${zipName}`]);
+    const zipResult = await exec.exec("unzip", [
+      "-oq",
+      `${tempArtifactPath}/${zipName}`,
+    ]);
     if (zipResult) {
-      throw ('Unzip failed');
+      throw "Unzip failed";
     }
-    core.info('Unzip successful');
+    core.info("Unzip successful");
   } catch (err) {
     core.setFailed(err.message);
   }
 }
-
 run();
