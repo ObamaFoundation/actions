@@ -36,7 +36,6 @@ runs:
           '-d=https://${{ inputs.az-storage-account }}.blob.core.windows.net/${{ inputs.az-storage-container }}' \
           --subscription=${{ inputs.az-subscription-id }} \
           --recursive \
-          --check-length=false \
           '--include-path=_app' \
           | tee tmp_copy_output.txt
 
@@ -93,5 +92,3 @@ runs:
         egrep 'Number of Copy Transfers|Total Number of Bytes' tmp_sync_output.txt >> $GITHUB_STEP_SUMMARY
         echo -e "\`\`\`\n" >> $GITHUB_STEP_SUMMARY
         echo -e "Deployment was successful: [https://${{ inputs.az-storage-account }}.z19.web.core.windows.net/](https://${{ inputs.az-storage-account }}.z19.web.core.windows.net/)\n" >> $GITHUB_STEP_SUMMARY
-
-az storage copy benchmark 'https://devobamaorg.blob.core.windows.net/$web'
