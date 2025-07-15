@@ -39,7 +39,7 @@ runs:
           '--include-path=_app' \
           | tee tmp_copy_output.txt
 
-    - name: Copy html files with cache-control
+    - name: Copy html,xml,health-check files with no-store
       shell: bash
       run: |
         az storage copy \
@@ -47,7 +47,7 @@ runs:
           '-d=https://${{ inputs.az-storage-account }}.blob.core.windows.net/${{ inputs.az-storage-container }}' \
           --subscription=${{ inputs.az-subscription-id }} \
           --recursive \
-          '--include-pattern=*.html' \
+          '--include-pattern=health-check;*.html;*.xml' \
           -- --cache-control=no-store \
           | tee tmp_copy_output.txt
 
