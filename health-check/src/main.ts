@@ -29,15 +29,12 @@ function outputResults(endpoint: string, results: Result[]) {
   core.summary.write();
 }
 
-function logFailure(msg: string, lastTry: boolean) {
+function logFailure(msg: string) {
   console.log(msg);
-  if (lastTry) {
-    core.warning(msg);
-  }
 }
 
-async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: number, lastTry: boolean) {
-  core.debug(`Health Check try ${tryNum} for: ${endpoint}`);
+async function doCheck(endpoint: string, jsonAssertions: string[]) {
+  core.debug(`Health Check try for: ${endpoint}. Waiting...`);
   try {
     const response = await fetch(endpoint, { headers: { "cache-control": "no-cache" } });
     const results: Result[] = [];
@@ -49,7 +46,7 @@ async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: numbe
         result: "fail",
         assertion: `Status code == ${response.status}`,
       });
-      logFailure("Invalid status code: " + response.status, lastTry);
+      logFailure("Invalid status code: " + response.status);
       return false;
     } else {
       results.push({
@@ -65,7 +62,7 @@ async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: numbe
       try {
         json = JSON.parse(responseText);
       } catch (error) {
-        logFailure("Invalid JSON from endpoint: " + error.toString(), lastTry);
+        logFailure("Invalid JSON from endpoint: " + error.toString());
         return false;
       }
 
@@ -75,17 +72,12 @@ async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: numbe
       });
     }
     if (results.some((r) => r.result == "fail")) {
-      if (lastTry) {
-        outputResults(endpoint, results);
-        logFailure("Assertions failed. See summary for details.", lastTry);
-      } else {
-        console.log("Assertions failed.");
-      }
+      console.log("Assertions failed.");
       return false;
     }
     outputResults(endpoint, results);
   } catch (error) {
-    logFailure(`Action failed with error ${error}`, lastTry);
+    logFailure(`Action failed with error ${error}`);
     return false;
   }
   console.log("Assertions passed. See summary for details.");
@@ -95,16 +87,22 @@ async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: numbe
 export async function main() {
   const endpoint = core.getInput("endpoint", { required: true });
   const jsonAssertions = core.getMultilineInput("json_assertions");
-  const retries = core.getInput("retries");
-  const retriesNumber = retries ? parseInt(retries) : 0;
-  for (let tryIdx = 0; tryIdx <= retriesNumber; tryIdx++) {
-    console.log("Try:", tryIdx + 1);
-    if (await doCheck(endpoint, jsonAssertions, tryIdx, tryIdx === retriesNumber)) {
+  const pollingInterval = core.getInput("pollingInterval");
+  const interval = pollingInterval ? parseInt(pollingInterval) : 15000;
+  setSleepTime(interval);
+  let elapsedTime = 0;
+  console.time("Health Check");
+
+  while(! await doCheck(endpoint, jsonAssertions)){
+    await sleep();
+    elapsedTime += interval/100/60;
+
+    // I've arbitrarily set the maximum wait to 5 minutes. 
+    if(elapsedTime > 5){
+      core.setFailed(`Health check action exceeded wait period of ${elapsedTime} seconds.`);
       return;
     }
-    if (tryIdx !== retriesNumber) {
-      await sleep();
-    }
   }
-  core.setFailed(`Health check action failed after ${retriesNumber} retries.`);
+
+  console.timeEnd("Health Check");
 }
