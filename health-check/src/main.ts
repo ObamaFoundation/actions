@@ -93,12 +93,12 @@ export async function main() {
   let elapsedTime = 0;
   console.time("Health Check");
 
-  while(! await doCheck(endpoint, jsonAssertions)){
+  while (! await doCheck(endpoint, jsonAssertions)) {
     await sleep();
-    elapsedTime += interval/100/60;
+    elapsedTime += interval / 100 / 60;
 
     // I've arbitrarily set the maximum wait to 5 minutes. 
-    if(elapsedTime > 5){
+    if (elapsedTime > 5) {
       core.setFailed(`Health check action exceeded wait period of ${elapsedTime} seconds.`);
       return;
     }
