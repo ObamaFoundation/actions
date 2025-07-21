@@ -99,17 +99,6 @@ async function doCheck(endpoint: string, jsonAssertions: string[], elapsedTime: 
   return true;
 }
 
-
-//Issues: 
-/**
- * We need to be able to escape the loop if we get results early.
- * 
- * We need to be able to output results in the grand majority of cases.
- * 
- * Making sure output is printed a single time.
- * 
- * The check needs to continue to return a boolean.
- */
 export async function main() {
   const endpoint = core.getInput("endpoint", { required: true });
   const jsonAssertions = core.getMultilineInput("json_assertions");
