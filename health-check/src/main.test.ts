@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { main, setSleepTime } from "./main";
+import { main, setSleepTime, setTimeoutLimit } from "./main";
 import * as core from "@actions/core";
 
 // Whether to print debug info to the console while running the test.
@@ -8,12 +8,11 @@ const DEBUG = true;
 const mockInitialValues = {
   endpoint: "https://jsonplaceholder.typicode.com/todos/1",
   assertions: [],
-  retries: "",
+  pollingInterval: "50",
 };
 // Set values in this object to change the behavior of the mock. The values are reset for each test.
 let mockValues = Object.assign({}, mockInitialValues);
 
-// This function is hoisted, so might as well just put it at the top level.
 // Mock out all of the functions in the "core" library that the health check uses.
 vi.mock("@actions/core", () => {
   return {
@@ -21,10 +20,8 @@ vi.mock("@actions/core", () => {
       switch (key) {
         case "endpoint":
           return mockValues.endpoint;
-          break;
-        case "retries":
-          return mockValues.retries;
-          break;
+        case "pollingInterval":
+          return mockValues.pollingInterval;
       }
     },
     getMultilineInput: () => mockValues.assertions,
@@ -57,6 +54,8 @@ describe("health check", () => {
     mockValues = Object.assign({}, mockInitialValues);
     spySetFailed = vi.spyOn(core, "setFailed");
     spyAddTable = vi.spyOn(core.summary, "addTable");
+    setTimeoutLimit(150);
+    setSleepTime(50);
   });
 
   it("with no assertions", async () => {
@@ -83,51 +82,42 @@ describe("health check", () => {
     ];
 
     await main();
-    expect(spySetFailed).toHaveBeenCalledWith("Health check action failed after 0 retries.");
+    expect(spySetFailed).toHaveBeenCalledWith("Health check action exceeded wait period of 150 milliseconds.");
     expect(spyAddTable).toHaveBeenCalledOnce();
   });
 
-  it("correctly fails after 2 retries", async () => {
-    mockValues.retries = "2";
+  it("correctly fails after 150 seconds", async () => {
     mockValues.assertions = [
       "userId == 2",
       "completed == false",
     ];
 
-    // Lower the sleep time so the test doesn't timeout.
-    setSleepTime(50);
     await main();
-    expect(spySetFailed).toHaveBeenCalledWith("Health check action failed after 2 retries.");
+    expect(spySetFailed).toHaveBeenCalledWith("Health check action exceeded wait period of 150 milliseconds.");
     expect(spyAddTable).toHaveBeenCalledOnce();
   });
 
   it("invalid assertion", async () => {
-    mockValues.retries = "2";
     mockValues.assertions = [
       "userId ?? 1",
       "completed == false",
     ];
     const spyWarning = vi.spyOn(core, "warning");
 
-    // Lower the sleep time so the test doesn't timeout.
-    setSleepTime(50);
     await main();
     expect(spyWarning).toHaveBeenCalled();
-    expect(spySetFailed).toHaveBeenCalledWith("Health check action failed after 2 retries.");
+    expect(spySetFailed).toHaveBeenCalledWith("Action failed with error Error: Invalid assertion: userId ?? 1. No valid Operator found.");
     expect(spyAddTable).not.toHaveBeenCalled();
   });
 
   it("invalid JSON", async () => {
-    mockValues.retries = "1";
     mockValues.endpoint = "https://jsonplaceholder.typicode.com";
     mockValues.assertions = [
       "completed == false",
     ];
 
-    // Lower the sleep time so the test doesn't timeout.
-    setSleepTime(50);
     await main();
-    expect(spySetFailed).toHaveBeenCalledWith("Health check action failed after 1 retries.");
+    expect(spySetFailed).toHaveBeenCalledWith("Invalid JSON from endpoint");
     expect(spyAddTable).not.toHaveBeenCalled();
   });
 });

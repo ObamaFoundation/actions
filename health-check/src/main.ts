@@ -2,11 +2,17 @@ import { Result } from "./types";
 import { assert, parse } from "./assertions";
 import * as core from "@actions/core";
 
-let sleepTime = 5000;
+let sleepTime = 50;
+let timeoutLimit = 300000;
+let checkInProgress = true;
 
 // For testing, to set the sleep time lower.
 export function setSleepTime(timeMs) {
   sleepTime = timeMs;
+}
+
+export function setTimeoutLimit(timeMs) {
+  timeoutLimit = timeMs;
 }
 
 function sleep() {
@@ -31,13 +37,15 @@ function outputResults(endpoint: string, results: Result[]) {
 
 function logFailure(msg: string) {
   console.log(msg);
+  core.warning(msg);
 }
 
-async function doCheck(endpoint: string, jsonAssertions: string[]) {
+async function doCheck(endpoint: string, jsonAssertions: string[], elapsedTime: number) {
+
   core.debug(`Health Check try for: ${endpoint}. Waiting...`);
+  let results: Result[] = [];
   try {
     const response = await fetch(endpoint, { headers: { "cache-control": "no-cache" } });
-    const results: Result[] = [];
 
     // Status Checks
     core.debug(`-- Status Check: ${response.status}`);
@@ -63,6 +71,7 @@ async function doCheck(endpoint: string, jsonAssertions: string[]) {
         json = JSON.parse(responseText);
       } catch (error) {
         logFailure("Invalid JSON from endpoint: " + error.toString());
+        core.setFailed("Invalid JSON from endpoint");
         return false;
       }
 
@@ -71,19 +80,36 @@ async function doCheck(endpoint: string, jsonAssertions: string[]) {
         results.push(assert({ left: json[left], op, right }));
       });
     }
+
     if (results.some((r) => r.result == "fail")) {
       console.log("Assertions failed.");
+      if (elapsedTime >= timeoutLimit) {
+        outputResults(endpoint, results);
+      }
       return false;
     }
-    outputResults(endpoint, results);
   } catch (error) {
     logFailure(`Action failed with error ${error}`);
+    core.setFailed(`Action failed with error ${error}`);
     return false;
   }
+  checkInProgress = false;
+  outputResults(endpoint, results);
   console.log("Assertions passed. See summary for details.");
   return true;
 }
 
+
+//Issues: 
+/**
+ * We need to be able to escape the loop if we get results early.
+ * 
+ * We need to be able to output results in the grand majority of cases.
+ * 
+ * Making sure output is printed a single time.
+ * 
+ * The check needs to continue to return a boolean.
+ */
 export async function main() {
   const endpoint = core.getInput("endpoint", { required: true });
   const jsonAssertions = core.getMultilineInput("json_assertions");
@@ -91,15 +117,18 @@ export async function main() {
   const interval = pollingInterval ? parseInt(pollingInterval) : 15000;
   setSleepTime(interval);
   let elapsedTime = 0;
+  checkInProgress = true;
+
   console.time("Health Check");
 
-  while (! await doCheck(endpoint, jsonAssertions)) {
+  while (elapsedTime <= timeoutLimit && checkInProgress) {
+    let completedCheck = await doCheck(endpoint, jsonAssertions, elapsedTime);
     await sleep();
-    elapsedTime += interval / 100 / 60;
+    elapsedTime += interval;
 
-    // I've arbitrarily set the maximum wait to 5 minutes. 
-    if (elapsedTime > 5) {
-      core.setFailed(`Health check action exceeded wait period of ${elapsedTime} seconds.`);
+    if (elapsedTime > timeoutLimit && !completedCheck) {
+      // I've arbitrarily set the maximum wait to 5 minutes. 
+      core.setFailed(`Health check action exceeded wait period of ${timeoutLimit} milliseconds.`);
       return;
     }
   }
