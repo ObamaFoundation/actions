@@ -2,11 +2,17 @@ import { Result } from "./types";
 import { assert, parse } from "./assertions";
 import * as core from "@actions/core";
 
-let sleepTime = 5000;
+let sleepTime = 50;
+let timeoutLimit = 300000;
+let checkInProgress = true;
 
 // For testing, to set the sleep time lower.
 export function setSleepTime(timeMs) {
   sleepTime = timeMs;
+}
+
+export function setTimeoutLimit(timeMs) {
+  timeoutLimit = timeMs;
 }
 
 function sleep() {
@@ -29,18 +35,17 @@ function outputResults(endpoint: string, results: Result[]) {
   core.summary.write();
 }
 
-function logFailure(msg: string, lastTry: boolean) {
+function logFailure(msg: string) {
   console.log(msg);
-  if (lastTry) {
-    core.warning(msg);
-  }
+  core.warning(msg);
 }
 
-async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: number, lastTry: boolean) {
-  core.debug(`Health Check try ${tryNum} for: ${endpoint}`);
+async function doCheck(endpoint: string, jsonAssertions: string[], elapsedTime: number) {
+
+  core.debug(`Health Check try for: ${endpoint}. Waiting...`);
+  let results: Result[] = [];
   try {
     const response = await fetch(endpoint, { headers: { "cache-control": "no-cache" } });
-    const results: Result[] = [];
 
     // Status Checks
     core.debug(`-- Status Check: ${response.status}`);
@@ -49,7 +54,7 @@ async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: numbe
         result: "fail",
         assertion: `Status code == ${response.status}`,
       });
-      logFailure("Invalid status code: " + response.status, lastTry);
+      logFailure("Invalid status code: " + response.status);
       return false;
     } else {
       results.push({
@@ -65,7 +70,8 @@ async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: numbe
       try {
         json = JSON.parse(responseText);
       } catch (error) {
-        logFailure("Invalid JSON from endpoint: " + error.toString(), lastTry);
+        logFailure("Invalid JSON from endpoint: " + error.toString());
+        core.setFailed("Invalid JSON from endpoint");
         return false;
       }
 
@@ -74,20 +80,21 @@ async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: numbe
         results.push(assert({ left: json[left], op, right }));
       });
     }
+
     if (results.some((r) => r.result == "fail")) {
-      if (lastTry) {
+      console.log("Assertions failed.");
+      if (elapsedTime >= timeoutLimit) {
         outputResults(endpoint, results);
-        logFailure("Assertions failed. See summary for details.", lastTry);
-      } else {
-        console.log("Assertions failed.");
       }
       return false;
     }
-    outputResults(endpoint, results);
   } catch (error) {
-    logFailure(`Action failed with error ${error}`, lastTry);
+    logFailure(`Action failed with error ${error}`);
+    core.setFailed(`Action failed with error ${error}`);
     return false;
   }
+  checkInProgress = false;
+  outputResults(endpoint, results);
   console.log("Assertions passed. See summary for details.");
   return true;
 }
@@ -95,16 +102,25 @@ async function doCheck(endpoint: string, jsonAssertions: string[], tryNum: numbe
 export async function main() {
   const endpoint = core.getInput("endpoint", { required: true });
   const jsonAssertions = core.getMultilineInput("json_assertions");
-  const retries = core.getInput("retries");
-  const retriesNumber = retries ? parseInt(retries) : 0;
-  for (let tryIdx = 0; tryIdx <= retriesNumber; tryIdx++) {
-    console.log("Try:", tryIdx + 1);
-    if (await doCheck(endpoint, jsonAssertions, tryIdx, tryIdx === retriesNumber)) {
+  const pollingInterval = core.getInput("pollingInterval");
+  const interval = pollingInterval ? parseInt(pollingInterval) : 15000;
+  setSleepTime(interval);
+  let elapsedTime = 0;
+  checkInProgress = true;
+
+  console.time("Health Check");
+
+  while (elapsedTime <= timeoutLimit && checkInProgress) {
+    let completedCheck = await doCheck(endpoint, jsonAssertions, elapsedTime);
+    await sleep();
+    elapsedTime += interval;
+
+    if (elapsedTime > timeoutLimit && !completedCheck) {
+      // I've arbitrarily set the maximum wait to 5 minutes. 
+      core.setFailed(`Health check action exceeded wait period of ${timeoutLimit} milliseconds.`);
       return;
     }
-    if (tryIdx !== retriesNumber) {
-      await sleep();
-    }
   }
-  core.setFailed(`Health check action failed after ${retriesNumber} retries.`);
+
+  console.timeEnd("Health Check");
 }
