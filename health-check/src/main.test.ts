@@ -104,8 +104,7 @@ describe("health check", () => {
       "userId ?? 1",
       "completed == false",
     ];
-    const spyWarning = vi.spyOn(core, "warning");
-
+    
     await main();
     expect(spyWarning).toHaveBeenCalled();
     expect(spySetFailed).toHaveBeenCalledWith("Action failed with error Error: Invalid assertion: userId ?? 1. No valid Operator found.");
