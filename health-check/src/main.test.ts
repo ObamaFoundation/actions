@@ -48,12 +48,14 @@ vi.mock("@actions/core", () => {
 
 let spySetFailed;
 let spyAddTable;
+let spyWarning;
 
 describe("health check", () => {
   beforeEach(() => {
     mockValues = Object.assign({}, mockInitialValues);
     spySetFailed = vi.spyOn(core, "setFailed");
     spyAddTable = vi.spyOn(core.summary, "addTable");
+    spyWarning = vi.spyOn(core, "warning");
     setTimeoutLimit(150);
     setSleepTime(50);
   });
@@ -117,7 +119,7 @@ describe("health check", () => {
     ];
 
     await main();
-    expect(spySetFailed).toHaveBeenCalledWith("Invalid JSON from endpoint");
+    expect(spyWarning).toHaveBeenCalledWith("Invalid JSON from endpoint");
     expect(spyAddTable).not.toHaveBeenCalled();
   });
 });

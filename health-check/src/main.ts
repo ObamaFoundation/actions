@@ -71,7 +71,7 @@ async function doCheck(endpoint: string, jsonAssertions: string[], elapsedTime: 
         json = JSON.parse(responseText);
       } catch (error) {
         logFailure("Invalid JSON from endpoint: " + error.toString());
-        core.setFailed("Invalid JSON from endpoint");
+        core.warning("Invalid JSON from endpoint");
         return false;
       }
 
