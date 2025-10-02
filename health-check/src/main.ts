@@ -75,10 +75,16 @@ async function doCheck(endpoint: string, jsonAssertions: string[], elapsedTime: 
         return false;
       }
 
-      jsonAssertions.forEach((assertion) => {
-        const { left, op, right } = parse(assertion);
-        results.push(assert({ left: json[left], op, right }));
-      });
+      try {
+        jsonAssertions.forEach((assertion) => {
+          const { left, op, right } = parse(assertion);
+          results.push(assert({ left: json[left], op, right }));
+        });
+      } catch (error) {
+        logFailure(error);
+        core.setFailed(error);
+        return true;
+      }
     }
 
     if (results.some((r) => r.result == "fail")) {

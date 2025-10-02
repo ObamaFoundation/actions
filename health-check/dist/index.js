@@ -26015,10 +26015,17 @@ function doCheck(endpoint, jsonAssertions, elapsedTime) {
                     core.warning("Invalid JSON from endpoint");
                     return false;
                 }
-                jsonAssertions.forEach((assertion) => {
-                    const { left, op, right } = (0,assertions/* parse */.Q)(assertion);
-                    results.push((0,assertions/* assert */.h)({ left: json[left], op, right }));
-                });
+                try {
+                    jsonAssertions.forEach((assertion) => {
+                        const { left, op, right } = (0,assertions/* parse */.Q)(assertion);
+                        results.push((0,assertions/* assert */.h)({ left: json[left], op, right }));
+                    });
+                }
+                catch (error) {
+                    logFailure(error);
+                    core.setFailed(error);
+                    return true;
+                }
             }
             if (results.some((r) => r.result == "fail")) {
                 console.log("Assertions failed.");
