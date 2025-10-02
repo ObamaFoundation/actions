@@ -26036,7 +26036,6 @@ function doCheck(endpoint, jsonAssertions, elapsedTime) {
             }
         }
         catch (error) {
-            logFailure(`Action failed with error ${error}`);
             core.warning(`Action failed with error ${error}`);
             return false;
         }

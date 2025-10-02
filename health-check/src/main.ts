@@ -95,7 +95,6 @@ async function doCheck(endpoint: string, jsonAssertions: string[], elapsedTime: 
       return false;
     }
   } catch (error) {
-    logFailure(`Action failed with error ${error}`);
     core.warning(`Action failed with error ${error}`);
     return false;
   }
