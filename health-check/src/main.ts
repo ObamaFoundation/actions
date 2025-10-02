@@ -82,7 +82,7 @@ async function doCheck(endpoint: string, jsonAssertions: string[], elapsedTime: 
         });
       } catch (error) {
         logFailure(error);
-        core.setFailed(error);
+        core.setFailed(`Action failed with error ${error}`);
         return true;
       }
     }

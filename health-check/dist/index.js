@@ -26023,7 +26023,7 @@ function doCheck(endpoint, jsonAssertions, elapsedTime) {
                 }
                 catch (error) {
                     logFailure(error);
-                    core.setFailed(error);
+                    core.setFailed(`Action failed with error ${error}`);
                     return true;
                 }
             }
