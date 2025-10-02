@@ -90,7 +90,7 @@ async function doCheck(endpoint: string, jsonAssertions: string[], elapsedTime: 
     }
   } catch (error) {
     logFailure(`Action failed with error ${error}`);
-    core.setFailed(`Action failed with error ${error}`);
+    core.warning(`Action failed with error ${error}`);
     return false;
   }
   checkInProgress = false;

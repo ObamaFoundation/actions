@@ -26030,7 +26030,7 @@ function doCheck(endpoint, jsonAssertions, elapsedTime) {
         }
         catch (error) {
             logFailure(`Action failed with error ${error}`);
-            core.setFailed(`Action failed with error ${error}`);
+            core.warning(`Action failed with error ${error}`);
             return false;
         }
         checkInProgress = false;
