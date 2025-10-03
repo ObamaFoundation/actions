@@ -71,14 +71,20 @@ async function doCheck(endpoint: string, jsonAssertions: string[], elapsedTime: 
         json = JSON.parse(responseText);
       } catch (error) {
         logFailure("Invalid JSON from endpoint: " + error.toString());
-        core.setFailed("Invalid JSON from endpoint");
+        core.warning("Invalid JSON from endpoint");
         return false;
       }
 
-      jsonAssertions.forEach((assertion) => {
-        const { left, op, right } = parse(assertion);
-        results.push(assert({ left: json[left], op, right }));
-      });
+      try {
+        jsonAssertions.forEach((assertion) => {
+          const { left, op, right } = parse(assertion);
+          results.push(assert({ left: json[left], op, right }));
+        });
+      } catch (error) {
+        logFailure(error);
+        core.setFailed(`Action failed with error ${error}`);
+        return true;
+      }
     }
 
     if (results.some((r) => r.result == "fail")) {
@@ -89,8 +95,7 @@ async function doCheck(endpoint: string, jsonAssertions: string[], elapsedTime: 
       return false;
     }
   } catch (error) {
-    logFailure(`Action failed with error ${error}`);
-    core.setFailed(`Action failed with error ${error}`);
+    core.warning(`Action failed with error ${error}`);
     return false;
   }
   checkInProgress = false;

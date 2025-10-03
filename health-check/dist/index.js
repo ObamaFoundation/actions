@@ -26012,13 +26012,20 @@ function doCheck(endpoint, jsonAssertions, elapsedTime) {
                 }
                 catch (error) {
                     logFailure("Invalid JSON from endpoint: " + error.toString());
-                    core.setFailed("Invalid JSON from endpoint");
+                    core.warning("Invalid JSON from endpoint");
                     return false;
                 }
-                jsonAssertions.forEach((assertion) => {
-                    const { left, op, right } = (0,assertions/* parse */.Q)(assertion);
-                    results.push((0,assertions/* assert */.h)({ left: json[left], op, right }));
-                });
+                try {
+                    jsonAssertions.forEach((assertion) => {
+                        const { left, op, right } = (0,assertions/* parse */.Q)(assertion);
+                        results.push((0,assertions/* assert */.h)({ left: json[left], op, right }));
+                    });
+                }
+                catch (error) {
+                    logFailure(error);
+                    core.setFailed(`Action failed with error ${error}`);
+                    return true;
+                }
             }
             if (results.some((r) => r.result == "fail")) {
                 console.log("Assertions failed.");
@@ -26029,8 +26036,7 @@ function doCheck(endpoint, jsonAssertions, elapsedTime) {
             }
         }
         catch (error) {
-            logFailure(`Action failed with error ${error}`);
-            core.setFailed(`Action failed with error ${error}`);
+            core.warning(`Action failed with error ${error}`);
             return false;
         }
         checkInProgress = false;

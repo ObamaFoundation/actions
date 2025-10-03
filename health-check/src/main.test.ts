@@ -48,12 +48,14 @@ vi.mock("@actions/core", () => {
 
 let spySetFailed;
 let spyAddTable;
+let spyWarning;
 
 describe("health check", () => {
   beforeEach(() => {
     mockValues = Object.assign({}, mockInitialValues);
     spySetFailed = vi.spyOn(core, "setFailed");
     spyAddTable = vi.spyOn(core.summary, "addTable");
+    spyWarning = vi.spyOn(core, "warning");
     setTimeoutLimit(150);
     setSleepTime(50);
   });
@@ -102,8 +104,7 @@ describe("health check", () => {
       "userId ?? 1",
       "completed == false",
     ];
-    const spyWarning = vi.spyOn(core, "warning");
-
+    
     await main();
     expect(spyWarning).toHaveBeenCalled();
     expect(spySetFailed).toHaveBeenCalledWith("Action failed with error Error: Invalid assertion: userId ?? 1. No valid Operator found.");
@@ -117,7 +118,7 @@ describe("health check", () => {
     ];
 
     await main();
-    expect(spySetFailed).toHaveBeenCalledWith("Invalid JSON from endpoint");
+    expect(spyWarning).toHaveBeenCalledWith("Invalid JSON from endpoint");
     expect(spyAddTable).not.toHaveBeenCalled();
   });
 });
