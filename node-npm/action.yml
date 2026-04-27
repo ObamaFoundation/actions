@@ -2,6 +2,9 @@ name: Setup Node and NPM
 description: Installs Node and NPM packages and automatically caches based on package-lock.json.
 
 inputs:
+  node_version:
+    description: "Node version to use. Default is 22."
+    default: 22
   read-packages-token:
     description: "Token for reading the OF private npm registry on Github"
 
@@ -10,7 +13,7 @@ runs:
   steps:
     - uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: ${{ inputs.node_version }}
         cache: 'npm'
         registry-url: https://npm.pkg.github.com/
     - name: Install dependencies
